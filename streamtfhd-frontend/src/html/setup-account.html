@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Setup Account - StreamTFHD</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="/vendors/tabler/3.36.1/tabler-icons.min.css">
+    <link href="/vendors/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container-fluid setup-account-body">
+        <div class="position-fixed top-0 end-0 p-3">
+            <i id="themeToggle" class="ti ti-sun cursor-pointer"></i>
+        </div>
+        <div class="d-flex align-items-center justify-content-center min-vh-100">
+            <div class="setup-account-container">
+                <div>
+                    <h2 class="text-center">Complete Your Account</h2>
+                    <p class="text-center">Set up your profile to get started with StreamTFHD</p>
+                </div>
+                <div id="alertContainer" class="w-100"></div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <div class="position-relative">
+                        <div class="setup-account-photo-profile-container">
+                            <img id="profileImage" src="assets/default-user-photo-profile.svg">
+                        </div>
+                        <label class="settings-pane-photo-profile-pencil-container">
+                            <span><i class="ti ti-pencil settings-pane-photo-profile-pencil"></i></span>
+                            <input
+                                    type="file"
+                                    id="setupAccountPhotoProfileImageUpload"
+                                    class="d-none"
+                                >
+                                <!--accept="image/png, image/jpeg, image/gif"-->
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3 mt-5">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-user"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="Username">
+                    </div>
+                    <div id="usernameError" class="invalid-feedback">Please fill the username form.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="Create a strong password">
+                        <span class="input-group-text"><i id="togglePassword" class="ti ti-eye"></i></span>
+                        
+                    </div>
+                    <div id="passwordError" class="invalid-feedback">Please fill the password form.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-lock"></i></span>
+                        <input type="password" class="form-control" id="repeatPassword" placeholder="Confirm your password">
+                        <span class="input-group-text"><i id="toggleRepeatPassword" class="ti ti-eye"></i></span>
+                    </div>
+                    <div id="repeatPasswordError" class="invalid-feedback">Please confirm password.</div>
+                    <div id="passwordDoesntMatchError" class="invalid-feedback">Password doesn't match.</div>
+                </div>
+                <div class="mt-5 d-grid">
+                    <button type="button" class="btn btn-primary-custom" onclick="main.view.submit();">Complete Setup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/vendors/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

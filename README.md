@@ -1,0 +1,463 @@
+# StreamTFHD
+A simple YouTube streaming platform.
+
+# Dependencies
+* `build-essential` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+* `pkg-config` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+* `libssl-dev` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+* `postgresql` (16.11 or higher)
+* `rustc` (1.92.0 or higher)
+* `cargo` (1.92.0 or higher)
+* `bash`
+* `curl`
+* `nginx` (for reverse proxy in production)
+* `ffmpeg`
+* `certbot` (if you're using SSL/TLS)
+* `python3-certbot-nginx` (if you're using SSL/TLS. If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+
+# Quick Setup And Installtion
+Comming soon....
+
+# Manual Installation
+This is the step by step of manual configuration and installation.
+
+## Install Dependency Packages
+To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and in runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
+
+At first we need to do update, use this command :
+```bash
+sudo apt update
+```
+
+And then install dependency packages (exclude `rustc` and `cargo`) using this command :
+```bash
+sudo apt install build-essential pkg-config libssl-dev postgresql curl nginx ffmpeg certbot python3-certbot-nginx -y
+```
+
+For `rustc` and `cargo`, we will install the lates version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+```
+
+After that, use this command to configures your current bash shell session to use the Rust programming environment :
+```bash
+source "$HOME/.cargo/env"
+```
+
+## Run In Development Environment
+To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
+
+### Build The Project
+To build the frontend, run these commands :
+```bash
+cd streamtfhd-frontend
+cargo build
+cd ../
+```
+
+To build the backend, run these commands :
+```bash
+cd streamtfhd-backend
+cargo build
+cd ../
+```
+
+### Create Database and Database User
+StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database. About how to create a database and a user step by step is not covered here, you can use search engine or AI to ask how to do that or do it by yourself.
+
+### Configure The Env File For Frontend
+```bash
+cd streamtfhd-frontend
+cp env.dev .env
+cd ../
+```
+
+### Configure The Env File For Backend
+```bash
+cd streamtfhd-backend
+cp env.dev .env
+```
+
+Edit the `.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME with the valid value and leave the others with default value.
+
+### Configure The Frontend
+The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT.
+
+Edit `streamtfhd-frontend/src/html/js/config.js` file with your favorite editor.
+
+Fill the BACKEND_HOST object with `localhost`, and fill the BACKEND_PORT object with `8000` value, so it will looks like this:
+```javascript
+const base_config = {
+    HTTP_PROTOCOL       : "http://",        // HTTP protocol.
+    WEBSOCKET_PROTOCOL  : "ws://",          // Websocket protocol.
+    BACKEND_HOST        : "localhost",      // Backend host.
+    BACKEND_PORT        : 8000,             // Backend port.
+    BACKEND_PATH        : null,             // Backend path. Fill it with null if you don't use backend path.
+};
+```
+
+### Run The StreamTFHD
+To run StreamTFHD, you can use cargo.
+
+To run the frontend :
+```bash
+cd streamtfhd-frontend
+cargo run
+```
+
+To run the backend :
+```bash
+cd streamtfhd-backend
+cargo run
+```
+
+### Open It From The Browser
+You can open it from the browser through `http://localhost:8080`
+
+### The Backend Logs
+You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs tab, in the web app.
+
+
+## Deploy It To Production
+This project can be deployed to any Linux distributions as long it uses `systemd` as init. The app will run under `systemd` as a service (daemon) and by `streamtfhd` user. It will write the logs to `/var/log/streamtfhd/app.log` instead of `systemd journal`. Only fatal errors of the app (like startup errors about database, env, logs, etc.) logged to `systemd journal`. If you want to debug the app, make sure you read those logs too.
+
+### Create Database and Database User
+StreamTFHD uses postgresql as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database. About how to create a database and a user step by step is not covered here, you can use search engine or AI to ask how to do that or do it by yourself.
+
+### Build The Project
+To build for production, we will use `cargo build --release` command. It will optimize the output binary for production, it will take longer to build, but it will much faster in runtime than the debug build.
+
+To build the frontend, run these commands:
+```bash
+cd streamtfhd-frontend
+cargo build --release
+cd ../
+```
+
+To build the backend, run these commands:
+```bash
+cd streamtfhd-backend
+cargo build --release
+cd ../
+```
+
+### Configure The Env File For Frontend
+```bash
+cd streamtfhd-frontend
+cp env.prod .prod
+cd ../
+```
+
+### Configure The Env File For Backend
+```bash
+cd streamtfhd-backend
+cp env.prod .prod
+```
+
+Edit the `.env` with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME, JWT_SECRET_KEY, FRONTEND_HOST and FRONTEND_PORT with the valid value and leave the others with default value. As a reminder, JWT_SECRET_KEY is vital. StreamTFHD uses HS256 algorithm, which means the JWT_SECRET_KEY must be 32 (or more) bytes lenght.
+
+```bash
+cd ../
+```
+
+### Install It To The System
+The installer is a `bash` script. Make sure you run it with `sudo` or equivalent. It will install all the app files to the system, make sure you are not get any error(s) in the installation process. The error message(s) will be appear in the terminal if you get any of it. To install it to the system, run this command:
+```bash
+sudo ./install.sh
+```
+
+### Configure The Frontend
+The frontend is HTML, CSS, and JavaScript. The frontend need to know what the port of the backend, what the host of the backend, what HTTP protocol should use (like unencrypted HTTP or secure and encrypted HTTPS), what WebSocket protocol should use (like unencrypted WebSocket or secure and encrypted WebSocket).
+
+Edit the `/var/www/streamtfhd/html/js/config.js` file with your favorite editor.
+
+In production, the frontend configuration should looks like this if you are not using SSL/TLS:
+```javascript
+const base_config = {
+    HTTP_PROTOCOL       : "http://",            // HTTP protocol.
+    WEBSOCKET_PROTOCOL  : "ws://",              // Websocket protocol.
+    BACKEND_HOST        : "your-server-host",   // Backend host.
+    BACKEND_PORT        : 80,                   // Backend port.
+    BACKEND_PATH        : "/api/v1",            // Backend path. Fill it with null if you don't use backend path.
+};
+```
+*Notes : Change your BACKEDN_HOST value with your real backend host.*
+
+Or looks like this if you are using SSL/TLS:
+```javascript
+const base_config = {
+    HTTP_PROTOCOL       : "https://",           // HTTP protocol.
+    WEBSOCKET_PROTOCOL  : "wss://",             // Websocket protocol.
+    BACKEND_HOST        : "your-server-host",   // Backend host.
+    BACKEND_PORT        : 80,                   // Backend port.
+    BACKEND_PATH        : "/api/v1",            // Backend path. Fill it with null if you don't use backend path.
+};
+```
+*Notes : Change your BACKEDN_HOST value with your real backend host.*
+
+### Configure NGINX As A Reverse Proxy
+NGINX play a big role here. It's like a gate for this app to the internet. Basically, the app just run locally in the server and then NGINX comes to make the app available for the user(s) through internet. Make sure you are not miss any details to configure it or you will not able to make this app online.
+
+Add NGINX configuration file:
+```bash
+sudo touch /etc/nginx/sites-available/streamtfhd
+```
+And then edit it with your favorite editor.
+
+If you are not using SSL/TLS, your NGINX configuration for StreamTFHD will looks like this :
+```nginx
+server {
+    listen 80;
+    
+    # Replace this with your real host
+    server_name your-host;
+
+    # Upload limit
+    client_max_body_size 15G;
+
+    # -------------------------
+    # Frontend (port 8080)
+    # -------------------------
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+
+    # -------------------------
+    # Backend API (everything else under /api/v1/)
+    # -------------------------
+    location /api/v1/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # -------------------------
+    # WebSocket: /api/v1/live-stream/monitor
+    # -------------------------
+    location /api/v1/live-stream/monitor {
+        proxy_pass http://127.0.0.1:8000/live-stream/monitor;
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    # -------------------------
+    # WebSocket: /api/v1/websocket-dashboard-metrics
+    # -------------------------
+    location /api/v1/websocket-dashboard-metrics {
+        proxy_pass http://127.0.0.1:8000/websocket-dashboard-metrics;
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+*Replace `your-host` with your real host in production.*
+
+Or, if you're using SSL/TLS, your NGINX configuration file will looks like this:
+```nginx
+server {
+    listen 80;
+
+    # Replace this with your real host
+    server_name your-host;
+
+    # Auto redirect to https://
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+
+    # Replace this with your real host
+    server_name your-host;
+
+    # Your SSL cert files
+    # Replace it with your real SSL certificate files
+    ssl_certificate     /path/to/your/ssl/certificate;
+    ssl_certificate_key /path/to/your/ssl/certificate/key;
+
+    # Optional but recommended
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # Upload limit
+    client_max_body_size 15G;
+
+    # -------------------------
+    # Frontend (port 8080)
+    # -------------------------
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+
+    # -------------------------
+    # Backend API (everything else under /api/v1/)
+    # -------------------------
+    location /api/v1/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # -------------------------
+    # WebSocket: /api/v1/live-stream/monitor
+    # -------------------------
+    location /api/v1/live-stream/monitor {
+        proxy_pass http://127.0.0.1:8000/live-stream/monitor;
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    # -------------------------
+    # WebSocket: /api/v1/websocket-dashboard-metrics
+    # -------------------------
+    location /api/v1/websocket-dashboard-metrics {
+        proxy_pass http://127.0.0.1:8000/websocket-dashboard-metrics;
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+*Make sure you change the `ssl_certificate`, `ssl_certificate_key`, and `server_name` value with real value.*
+
+To enable the site, you can create a symbolic link in `/etc/nginx/sites-enabled/` by using this command:
+```bash
+sudo ln -s /etc/nginx/sites-available/streamtfhd /etc/nginx/sites-enabled/streamtfhd
+```
+
+Remove the default configuration of NGINX web server:
+
+```bash
+sudo rm /etc/nginx/sites-available/default
+```
+
+Check if you have any error(s) in your NGINX configuration using this command:
+```bash
+sudo nginx -t
+```
+
+And then restart the NGINX service using `systemctl` command :
+```bash
+sudo systemctl restart nginx
+```
+
+### Start StreamTFHD service
+To start both StreamTFHD service backend and frontend, you can use `systemctl` command. Make sure `postgresql` service already running, if not, the StreamTFHD service will fail to start.
+
+#### Start StreamTFHD Frontend
+
+To start the frontend, use this command:
+```bash
+sudo systemctl start streamtfhd-frontend.service
+```
+
+Check if you get any error(s) using `journalctl` command:
+```bash
+journalctl -u streamtfhd-frontend.service -f
+```
+
+Check is your frontend service is running or not:
+```bash
+sudo systemctl status streamtfhd-frontend.service
+```
+
+#### Start StreamTFHD Backend
+
+To start the backend, use this command:
+```bash
+sudo systemctl start streamtfhd-backend.service
+```
+
+Check if you get any error(s) using `journalctl` command:
+```bash
+journalctl -u streamtfhd-backend.service -f
+```
+
+Check is your backend service is running or not:
+```bash
+sudo systemctl status streamtfhd-backend.service
+```
+
+And now you can access the app through browser in `http://your-host`
+
+### Make The App Service Survive Restart/Reboot
+To make the app survive from restart or reboot, you must make the app start automatically at boot. To do that, you can use `systemd` through `systemctl` command.
+
+To make the frontend start automatically at boot, use this command:
+```bash
+sudo systemctl enable streamtfhd-frontend.service
+```
+
+To make the backend start automatically at boot, use this command:
+```bash
+sudo systemctl enable streamtfhd-backend.service
+```
+
+# Set The Server's Timezone
+```bash
+sudo timedatectl set-timezone Asia/Jakarta
+```
+
+# Reset Password
+Sometimes we forgot the password that we use because of some reason. The web app does not have dedicated reset password feature so if we forgot the password we will locked out from the app. That's why `streamtfhd-reset-password` exist. Basically, `streamtfhd-reset-password` is a Rust project that we can build and run using `cargo`.
+
+To reset the password, at first, we have to build the `streamtfhd-reset-password` using cargo :
+```bash
+cd streamtfhd-reset-password
+cargo build
+```
+
+Copy the `env.file` file to `.env`
+```bash
+cp env.file .env
+```
+
+Edit the `.env` file using your favorite editor. Fill all nedded information like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME.
+
+After that, now you can reset the password by runing it using `cargo`
+```bash
+cargo run
+```
+
+And then follow the instructions.

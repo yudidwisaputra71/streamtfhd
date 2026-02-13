@@ -1,0 +1,11 @@
+streamtfhd-frontend/target/
+streamtfhd-frontend/Cargo.lock
+streamtfhd-frontend/.env
+streamtfhd-backend/target/
+streamtfhd-backend/Cargo.lock
+streamtfhd-backend/uploads/
+streamtfhd-backend/streamtfhd.log
+streamtfhd-backend/.env
+streamtfhd-reset-password/target/
+streamtfhd-reset-password/.env
+streamtfhd-reset-password/Cargo.lock

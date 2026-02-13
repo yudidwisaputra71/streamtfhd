@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard - StreamTFHD</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/vendors/tabler/3.36.1/tabler-icons.min.css">
+    <link href="/vendors/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendors/video-js/8.23.4/video-js.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+  <body id="body">
+    <nav class="navbar fixed-top navbar-theme">
+        <div class="container-fluid">
+            <div>
+                <img src="assets/streamtfhd-logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                <span>StreamTFHD</span>
+            </div>
+            <div class="d-flex">
+                <i id="themeToggle" class="ti ti-sun me-3 cursor-pointer"></i>
+                <i class="ti ti-bell"></i>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <a href="#" class="sidebar-item sidebar-item-active">
+            <i class="ti ti-broadcast"></i>
+            <span>Streams</span>
+        </a>
+        <a href="/gallery" class="sidebar-item">
+            <i class="ti ti-video"></i>
+            <span>Gallery</span>
+        </a>
+        <a href="/history" class="sidebar-item">
+            <i class="ti ti-history"></i>
+            <span>History</span>
+        </a>
+        <div class="dropdown sidebar-item profile">
+            <a href="#" class="sidebar-item profile sidebar-item-profile" data-bs-toggle="dropdown" aria-expanded="false">
+                <img id="sidebarAvatar" class="sidebar-img-profile" src="assets/default-user-photo-profile.svg">
+                <span class="sidebar-text-profile">Profile</span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item small d-inline-flex align-items-center" href="/settings"><i class="ti ti-settings me-2"></i> Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item small d-inline-flex align-items-center" href="/logout"><i class="ti ti-logout me-2"></i> Sign Out</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main id="content" class="content">
+        <div class="container-fluid">
+            <div id="alertContainerDashboard"></div>
+            <div class="row row-cols-2 row-cols-lg-4 row-cols-xl-6 g-3">
+                <div class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">Active Streams</h5>
+                                <i class="ti ti-broadcast card-title-monitor-icon"></i>
+                            </div>
+                            <p class="mt-3">
+                                <span id="activeStreamsText" class="h3 fw-bold text-primary-color">0</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">CPU Usage</h5>
+                                <i class="ti ti-cpu card-title-monitor-icon"></i>
+                            </div>
+                            <p class="mt-3">
+                                <span id="cpuUsageText" class="h3 fw-bold text-primary-color card-title-monitor-text-value">0%</span>
+                            </p>
+                            <div>
+                                <div class="progress card-monitor-progress">
+                                    <div id="cpuUsageProgressBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">Memory</h5>
+                                <i class="ti ti-device-sd-card card-title-monitor-icon"></i>
+                            </div>
+                            <p class="mt-3">
+                                <span id="usedMemory" class="h3 fw-bold text-primary-color card-title-monitor-text-value">0 GB</span>
+                                <span id="availableMemory" class="h5 fw-bold small">/0 GB</span>
+                            </p>
+                            <div>
+                                <div class="progress card-monitor-progress">
+                                    <div id="memoryUsageProgressBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="cardMonitorInternetSpeedOrBandwidth" class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">Internet Speed</h5>
+                                <i class="ti ti-wifi card-title-monitor-icon"></i>
+                            </div>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="small">↑</span>
+                                    <span id="internetSpeedUpload" class="h5 fw-bold text-primary-color card-title-monitor-text-value">0 KBps</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="small">↓</span>
+                                    <span id="internetSpeedDownload" class="h5 fw-bold text-primary-color card-title-monitor-text-value">0 KBps</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">Bandwidth</h5>
+                                <i class="ti ti-brand-speedtest card-title-monitor-icon"></i>
+                            </div>
+                            <p class="mt-3">
+                                <span id="bandwidth" class="h3 fw-bold text-primary-color card-title-monitor-text-value">0 KB</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-monitor">
+                        <div class="card-body">
+                            <div class="card-title-monitor">
+                                <h5 class="card-title card-title-monitor-text">Disk Usage</h5>
+                                <i class="ti ti-device-sd-card card-title-monitor-icon"></i>
+                            </div>
+                            <p class="mt-3">
+                                <span id="diskUsageUsed" class="h3 fw-bold text-primary-color card-title-monitor-text-value">0 MB</span>
+                                <span id="diskUsageAvailable" class="h5 fw-bold small">/0 MB</span>
+                            </p>
+                            <div>
+                                <div class="progress card-monitor-progress">
+                                    <div id="diskUsageProgressBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid d-flex justify-content-between mt-4 d-none d-lg-flex">
+            <div class="d-flex">
+                <div class="mt-auto mb-auto me-4">
+                    <span class="fs-5 fw-bold">Streaming Status</span>
+                </div>
+                <div class="mt-auto mb-auto dashboard-server-time-bg d-inline-flex align-items-center">
+                    <span id="serverTimeDashboardWeb" class="small extra-small mt-1 mb-1">Server time : 31 Dec 2025 14:32:11</span>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="mt-auto mb-auto me-3">
+                    <div class="input-group mb-3 mt-auto mb-auto">
+                        <span class="input-group-text">
+                            <i class="ti ti-search"></i>
+                        </span>
+                        <input id="searchStreamWeb" type="text" class="form-control" placeholder="Search streams...">
+                    </div>
+                </div>
+                <div class="mt-auto mb-auto">
+                    <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#newStreamModal">
+                        <i class="ti ti-plus"></i>
+                        <span>New Stream</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid justify-content-between mt-4 d-block d-lg-none">
+            <div class="d-flex mb-1">
+                <div class="me-4">
+                    <span class="fs-5 fw-bold">Streaming Status</span>
+                </div>
+                <div class="dashboard-server-time-bg d-none d-md-block d-inline-flex align-items-center">
+                    <span id="serverTimeDashboardTablet" class="extra-small">Server time : 31 Dec 2025 14:32:11</span>
+                </div>
+            </div>
+            <div>
+                <div class="input-group mb-1">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="ti ti-search"></i>
+                    </span>
+                    <input id="searchStreamTablet" type="text" class="form-control" placeholder="Search streams...">
+                </div>
+            </div>
+            <div class="d-grid">
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#newStreamModal">
+                    <i class="ti ti-plus"></i>
+                    <span>New Stream</span>
+                </button>
+            </div>
+        </div>
+        <div class="container-fluid justify-content-between mt-4 d-none d-lg-block">
+            <div class="table-responsive table-dashboard-container">
+                <table class="table table-borderless table-dashboard">
+                    <thead>
+                        <tr>
+                            <th class="small">STREAM NAME</th>
+                            <th class="small">START DATE</th>
+                            <th class="small">SCHEDULE</th>
+                            <th class="small">STATUS</th>
+                            <th class="small">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="liveStreamsContentWeb">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="liveStreamsContentTablet" class="container-fluid py-5 d-block d-lg-none">
+        </div>
+        <div class="modal fade" id="deleteStreamModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="delteStreamModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Stream</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alertContainerDeleteStream"></div>
+                        <p>Are you sure you want to delete this stream? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger-custom" onclick="main.view.deleteStream();">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="newStreamModal" class="modal fade" tabindex="-1" data-bs-backdrop="static" aria-labelledby="newStreamModal" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Create New Stream</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alertContainerCreateNewStreamModal"></div>
+                        <!-- Web -->
+                        <div class="d-none d-lg-block">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="dropdown">
+                                            <div class="d-grid">
+                                                <label class="form-label">Select Video</label>
+                                                <button id="createStreamVideoChooserDropdownButtonWeb" class="btn dropdown-toggle d-flex align-items-center justify-content-between button-dashboard-modal-video-chooser" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Choose a video...
+                                                </button>
+                                                <div id="createStreamVideoChooserDropdownButtonWebError" class="invalid-feedback">Please choose a video.</div>
+                                                <ul id="createStreamVideoChooserDropdownMenuWeb" class="dropdown-menu w-100 dashboard-modal-video-chooser-dropdown-menu">
+                                                    <li class="ms-2 me-2">
+                                                        <div class="input-group mb-3 dashboard-modal-video-chooser-video-search">
+                                                            <span class="input-group-text">
+                                                                <i class="ti ti-search"></i>
+                                                            </span>
+                                                            <input id="crateStreamVideoChooserSearchWeb" type="text" class="form-control form-control-dashboard-modal-video-chooser-search" placeholder="Search videos...">
+                                                        </div>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                </ul>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Stream Title</label>
+                                                <input id="createStreamStreamTitleWeb" type="text" class="form-control" placeholder="Enter stream title...">
+                                                <div id="createStreamStreamTitleWebError" class="invalid-feedback">Please fill the stream title form.</div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Stream Configuration</label>
+                                                <div class="input-group mb-3">
+                                                    <i class="ti ti-link input-group-text"></i>
+                                                    <input id="createStreamRtmpUrlWeb" type="text" class="form-control" placeholder="RTMP URL">
+                                                </div>
+                                                <div id="createStreamRtmpUrlWebError" class="invalid-feedback">Please fill the RTMP URL form.</div>
+                                                <div class="input-group mb-3">
+                                                    <i class="ti ti-key input-group-text"></i>
+                                                    <input id="createStreamStreamKeyWeb" type="password" class="form-control" placeholder="Stream Key">
+                                                    <i id="createStreamToggleStreamKeyWeb" class="ti ti-eye input-group-text cursor-pointer"></i>
+                                                </div>
+                                                <div id="createStreamStreamKeyWebError" class="invalid-feedback">Please fill the stream key form.</div>
+                                            </div>
+                                            <div class="mt-4 d-flex">
+                                                <span class="me-3">Schedule Settings</span>
+                                                <div class="dashboard-server-time-bg d-inline-flex align-items-center">
+                                                    <span id="serverTimeCreateStreamWeb" class="extra-small mt-1 mb-1">Server time : 1 Jan 2026 15:23:11</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <label class="form-label">Loop Video In</label>
+                                                <div class="input-group mb-3 text-center">
+                                                    <span class="input-group-text cursor-pointer" onclick="main.view.createStreamDecreaseLoopVideoIn('web');">-</span>
+                                                    <input id="createStreamLoopVideoInWeb" type="number" class="form-control text-center" value="1">
+                                                    <span class="input-group-text cursor-pointer" onclick="main.view.createStreamIncreaseLoopVideoIn('web');">+</span>
+                                                    <span class="input-group-text">time(s)</span>
+                                                </div>
+                                                <div id="createStreamLoopVideoInWebError" class="invalid-feedback">Please fill the loop video form.</div>
+                                            </div>
+                                            <div class="d-flex flex-column mt-2">
+                                                <label class="form-label">Start Time</label>
+                                                <input id="createStreamStartTimeWeb" class="form-control" type="datetime-local">
+                                                <div id="createStreamStartTimeWebError" class="invalid-feedback">Error.</div>
+                                            </div>
+                                            <div class="d-flex flex-column mt-2">
+                                                <label class="form-label">End Time</label>
+                                                <input id="createStreamEndTimeWeb" class="form-control" type="datetime-local">
+                                                <div id="createStreamEndTimeWebError" class="invalid-feedback">Error.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container">
+                                            <div id="createStreamVideoPreviewWeb">
+                                                <div class="dashboard-modal-video-preview d-flex align-items-center justify-content-center">
+                                                    <div class="text-center dashboard-modal-video-preview-content">
+                                                        <div class="dashboard-modal-video-preview-content-icon mb-2">
+                                                            <i class="ti ti-video"></i>
+                                                        </div>
+                                                        <div class="dashboard-modal-video-preview-content-text">
+                                                            Select a video to preview
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tablet and mobile -->
+                        <div class="d-block d-lg-none">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="container">
+                                            <div id="createStreamVideoPreviewTablet">
+                                                <div class="dashboard-modal-video-preview d-flex align-items-center justify-content-center">
+                                                    <div class="text-center dashboard-modal-video-preview-content">
+                                                        <div class="dashboard-modal-video-preview-content-icon mb-2">
+                                                            <i class="ti ti-video"></i>
+                                                        </div>
+                                                        <div class="dashboard-modal-video-preview-content-text">
+                                                            Select a video to preview
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown mt-5">
+                                            <div class="d-grid">
+                                                <label class="form-label">Select Video</label>
+                                                <button id="createStreamVideoChooserDropdownButtonTablet" id="dashboardModalVideoChooserDropdownTablet" class="btn dropdown-toggle d-flex align-items-center justify-content-between button-dashboard-modal-video-chooser" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Choose a video...
+                                                </button>
+                                                <div id="createStreamVideoChooserDropdownButtonTabletError" class="invalid-feedback">Please choose a video.</div>
+                                                <ul id="createStreamVideoChooserDropdownMenuTablet" class="dropdown-menu w-100 dashboard-modal-video-chooser-dropdown-menu">
+                                                    <li class="ms-2 me-2">
+                                                        <div class="input-group mb-3 dashboard-modal-video-chooser-video-search">
+                                                            <span class="input-group-text">
+                                                                <i class="ti ti-search"></i>
+                                                            </span>
+                                                            <input id="crateStreamVideoChooserSearchTablet" type="text" class="form-control form-control-dashboard-modal-video-chooser-search" placeholder="Search videos...">
+                                                        </div>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Stream Title</label>
+                                            <input id="createStreamStreamTitleTablet" type="text" class="form-control" placeholder="Enter stream title...">
+                                            <div id="createStreamStreamTitleTabletError" class="invalid-feedback">Please fill stream title form.</div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Stream Configuration</label>
+                                            <div class="input-group mb-3">
+                                                <i class="ti ti-link input-group-text"></i>
+                                                <input id="createStreamRtmpUrlTablet" type="text" class="form-control" placeholder="RTMP URL">
+                                            </div>
+                                            <div id="createStreamRtmpUrlTabletError" class="invalid-feedback">Please fill RTMP URL form.</div>
+                                            <div class="input-group mb-3">
+                                                <i class="ti ti-key input-group-text"></i>
+                                                <input id="createStreamStreamKeyTablet" type="password" class="form-control" placeholder="Stream Key">
+                                                <i id="createStreamToggleStreamKeyTablet" class="ti ti-eye input-group-text"></i>
+                                            </div>
+                                            <div id="createStreamStreamKeyTabletError" class="invalid-feedback">Please fill stream key form.</div>
+                                        </div>
+                                        <div class="mt-4 d-flex flex-column">
+                                            <span class="me-3">Schedule Settings</span>
+                                            <div class="dashboard-server-time-bg mt-1 d-inline-flex align-items-center">
+                                                <span id="serverTimeCreateStreamTablet" class="extra-small mt-1 mb-1">Server time : 1 Jan 2026 15:23:11</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Loop Video In</label>
+                                            <div class="input-group mb-3 text-center">
+                                                <span class="input-group-text" onclick="main.view.createStreamDecreaseLoopVideoIn('tablet');">-</span>
+                                                <input id="createStreamLoopVideoInTablet" type="number" class="form-control text-center" value="1">
+                                                <span class="input-group-text" onclick="main.view.createStreamIncreaseLoopVideoIn('tablet');">+</span>
+                                                <span class="input-group-text">time(s)</span>
+                                                
+                                            </div>
+                                            <div id="createStreamLoopVideoInTabletError" class="invalid-feedback">Please fill loop video form.</div>
+                                        </div>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label class="form-label">Start Time</label>
+                                            <input id="createStreamStartTimeTablet" class="form-control" type="datetime-local">
+                                            <div id="createStreamStartTimeTabletError" class="invalid-feedback">Error.</div>
+                                        </div>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label class="form-label">End Time</label>
+                                            <input id="createStreamEndTimeTablet" class="form-control" type="datetime-local">
+                                            <div id="createStreamEndTimeTabletError" class="invalid-feedback">Error.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-none d-lg-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary-custom" onclick="main.view.createStreamSubmit('web')">Create Stream</button>
+                    </div>
+                    <div class="modal-footer d-flex d-lg-none justify-content-end">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary-custom" onclick="main.view.createStreamSubmit('tablet')">Create Stream</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="editStreamModal" class="modal fade" tabindex="-1" data-bs-backdrop="static" aria-labelledby="editStreamModal" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Edit Stream</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alertContainerEditStreamModal"></div>
+                        <!-- Web -->
+                        <div class="d-none d-lg-block">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="dropdown">
+                                            <div class="d-grid">
+                                                <label class="form-label">Select Video</label>
+                                                <button id="editStreamVideoChooserDropdownButtonWeb" class="btn dropdown-toggle d-flex align-items-center justify-content-between button-dashboard-modal-video-chooser" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Choose a video...
+                                                </button>
+                                                <div id="editStreamVideoChooserDropdownButtonWebError" class="invalid-feedback">Please choose a video.</div>
+                                                <ul id="editStreamVideoChooserDropdownMenuWeb" class="dropdown-menu w-100 dashboard-modal-video-chooser-dropdown-menu">
+                                                    <li class="ms-2 me-2">
+                                                        <div class="input-group mb-3 dashboard-modal-video-chooser-video-search">
+                                                            <span class="input-group-text">
+                                                                <i class="ti ti-search"></i>
+                                                            </span>
+                                                            <input id="editStreamVideoChooserSearchWeb" type="text" class="form-control form-control-dashboard-modal-video-chooser-search" placeholder="Search videos...">
+                                                        </div>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                </ul>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Stream Title</label>
+                                                <input id="editStreamStreamIdWeb" type="text" class="d-none">
+                                                <input id="editStreamStreamTitleWeb" type="text" class="form-control" placeholder="Enter stream title...">
+                                                <div id="editStreamStreamTitleWebError" class="invalid-feedback">Please fill the stream title form.</div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Stream Configuration</label>
+                                                <div class="input-group mb-3">
+                                                    <i class="ti ti-link input-group-text"></i>
+                                                    <input id="editStreamRtmpUrlWeb" type="text" class="form-control" placeholder="RTMP URL">
+                                                </div>
+                                                <div id="editStreamRtmpUrlWebError" class="invalid-feedback">Please fill the RTMP URL form.</div>
+                                                <div class="input-group mb-3">
+                                                    <i class="ti ti-key input-group-text"></i>
+                                                    <input id="editStreamStreamKeyWeb" type="password" class="form-control" placeholder="Stream Key">
+                                                    <i id="editStreamToggleStreamKeyWeb" class="ti ti-eye input-group-text cursor-pointer"></i>
+                                                </div>
+                                                <div id="editStreamStreamKeyWebError" class="invalid-feedback">Please fill the stream key form.</div>
+                                            </div>
+                                            <div class="mt-4 d-flex">
+                                                <span class="me-3">Schedule Settings</span>
+                                                <div class="dashboard-server-time-bg d-inline-flex align-items-center">
+                                                    <span id="serverTimeEditStreamWeb" class="extra-small mt-1 mb-1">Server time : 1 Jan 2026 15:23:11</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <label class="form-label">Loop Video In</label>
+                                                <div class="input-group mb-3 text-center">
+                                                    <span class="input-group-text cursor-pointer" onclick="main.view.editStreamDecreaseLoopVideoIn('web');">-</span>
+                                                    <input id="editStreamLoopVideoInWeb" type="number" class="form-control text-center" value="1">
+                                                    <span class="input-group-text cursor-pointer" onclick="main.view.editStreamIncreaseLoopVideoIn('web');">+</span>
+                                                    <span class="input-group-text">time(s)</span>
+                                                </div>
+                                                <div id="editStreamLoopVideoInWebError" class="invalid-feedback">Please fill the loop video form.</div>
+                                            </div>
+                                            <div class="d-flex flex-column mt-2">
+                                                <label class="form-label">Start Time</label>
+                                                <input id="editStreamStartTimeWeb" class="form-control" type="datetime-local">
+                                                <div id="editStreamStartTimeWebError" class="invalid-feedback">Error.</div>
+                                            </div>
+                                            <div class="d-flex flex-column mt-2">
+                                                <label class="form-label">End Time</label>
+                                                <input id="editStreamEndTimeWeb" class="form-control" type="datetime-local">
+                                                <div id="editStreamEndTimeWebError" class="invalid-feedback">Error.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container">
+                                            <div id="editStreamVideoPreviewWeb">
+                                                <div class="dashboard-modal-video-preview d-flex align-items-center justify-content-center">
+                                                    <div class="text-center dashboard-modal-video-preview-content">
+                                                        <div class="dashboard-modal-video-preview-content-icon mb-2">
+                                                            <i class="ti ti-video"></i>
+                                                        </div>
+                                                        <div class="dashboard-modal-video-preview-content-text">
+                                                            Select a video to preview
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tablet and mobile -->
+                        <div class="d-block d-lg-none">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="container">
+                                            <div id="editStreamVideoPreviewTablet">
+                                                <div class="dashboard-modal-video-preview d-flex align-items-center justify-content-center">
+                                                    <div class="text-center dashboard-modal-video-preview-content">
+                                                        <div class="dashboard-modal-video-preview-content-icon mb-2">
+                                                            <i class="ti ti-video"></i>
+                                                        </div>
+                                                        <div class="dashboard-modal-video-preview-content-text">
+                                                            Select a video to preview
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown mt-5">
+                                            <div class="d-grid">
+                                                <label class="form-label">Select Video</label>
+                                                <button id="editStreamVideoChooserDropdownButtonTablet" id="dashboardModalVideoChooserDropdownTablet" class="btn dropdown-toggle d-flex align-items-center justify-content-between button-dashboard-modal-video-chooser" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Choose a video...
+                                                </button>
+                                                <div id="editStreamVideoChooserDropdownButtonTabletError" class="invalid-feedback">Please choose a video.</div>
+                                                <ul id="editStreamVideoChooserDropdownMenuTablet" class="dropdown-menu w-100 dashboard-modal-video-chooser-dropdown-menu">
+                                                    <li class="ms-2 me-2">
+                                                        <div class="input-group mb-3 dashboard-modal-video-chooser-video-search">
+                                                            <span class="input-group-text">
+                                                                <i class="ti ti-search"></i>
+                                                            </span>
+                                                            <input id="editStreamVideoChooserSearchTablet" type="text" class="form-control form-control-dashboard-modal-video-chooser-search" placeholder="Search videos...">
+                                                        </div>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Stream Title</label>
+                                            <input id="editStreamStreamIdTablet" type="text" class="d-none">
+                                            <input id="editStreamStreamTitleTablet" type="text" class="form-control" placeholder="Enter stream title...">
+                                            <div id="editStreamStreamTitleTabletError" class="invalid-feedback">Please fill stream title form.</div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Stream Configuration</label>
+                                            <div class="input-group mb-3">
+                                                <i class="ti ti-link input-group-text"></i>
+                                                <input id="editStreamRtmpUrlTablet" type="text" class="form-control" placeholder="RTMP URL">
+                                            </div>
+                                            <div id="editStreamRtmpUrlTabletError" class="invalid-feedback">Please fill RTMP URL form.</div>
+                                            <div class="input-group mb-3">
+                                                <i class="ti ti-key input-group-text"></i>
+                                                <input id="editStreamStreamKeyTablet" type="password" class="form-control" placeholder="Stream Key">
+                                                <i id="editStreamToggleStreamKeyTablet" class="ti ti-eye input-group-text"></i>
+                                            </div>
+                                            <div id="editStreamStreamKeyTabletError" class="invalid-feedback">Please fill stream key form.</div>
+                                        </div>
+                                        <div class="mt-4 d-flex flex-column">
+                                            <span class="me-3">Schedule Settings</span>
+                                            <div class="dashboard-server-time-bg mt-1 d-inline-flex align-items-center">
+                                                <span id="serverTimeEditStreamTablet" class="extra-small mt-1 mb-1">Server time : 1 Jan 2026 15:23:11</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Loop Video In</label>
+                                            <div class="input-group mb-3 text-center">
+                                                <span class="input-group-text" onclick="main.view.editStreamDecreaseLoopVideoIn('tablet');">-</span>
+                                                <input id="editStreamLoopVideoInTablet" type="number" class="form-control text-center" value="1">
+                                                <span class="input-group-text" onclick="main.view.editStreamIncreaseLoopVideoIn('tablet');">+</span>
+                                                <span class="input-group-text">time(s)</span>
+                                                
+                                            </div>
+                                            <div id="editStreamLoopVideoInTabletError" class="invalid-feedback">Please fill loop video form.</div>
+                                        </div>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label class="form-label">Start Time</label>
+                                            <input id="editStreamStartTimeTablet" class="form-control" type="datetime-local">
+                                            <div id="editStreamStartTimeTabletError" class="invalid-feedback">Error.</div>
+                                        </div>
+                                        <div class="d-flex flex-column mt-2">
+                                            <label class="form-label">End Time</label>
+                                            <input id="editStreamEndTimeTablet" class="form-control" type="datetime-local">
+                                            <div id="editStreamEndTimeTabletError" class="invalid-feedback">Error.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-none d-lg-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button id="editStreamSubmitButtonWeb" type="button" class="btn btn-primary-custom" onclick="main.view.editStreamSubmit('web')">Save</button>
+                    </div>
+                    <div class="modal-footer d-flex d-lg-none justify-content-end">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button id="editStreamSubmitButtonTablet" type="button" class="btn btn-primary-custom" onclick="main.view.editStreamSubmit('tablet')">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <!-- Position it: -->
+            <!-- - `.toast-container` for spacing between toasts -->
+            <!-- - `top-0` & `end-0` to position the toasts in the upper right corner -->
+            <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+
+                <!-- Then put toasts within -->
+                <div id="checkCredentialNetworkErrorToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Check Credentials</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Check credentials failed.
+                    </div>
+                </div>
+
+                <div id="systemMonitorWebsocketConnectionErrorToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">System Monitor</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        System monitor websocket connection failed.
+                    </div>
+                </div>
+                <div id="systemMonitorWebsocketConnectionClosedToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">System Monitor</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        System monitor websocket connection closed unexpectedly.
+                    </div>
+                </div>
+
+                <div id="liveStreamMonitorWebsocketConnectionErrorToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream Monitor</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream monitor websocket connection failed.
+                    </div>
+                </div>
+                <div id="liveStreamMonitorWwebsocketConnectionClosedToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream Monitor</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream monitor websocket connection closed unexpectedly.
+                    </div>
+                </div>
+
+                <div id="liveStreamStartedToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream is started.
+                    </div>
+                </div>
+
+                <div id="liveStreamScheduledToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream is scheduled.
+                    </div>
+                </div>
+
+                <div id="liveStreamStoppedToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream is stopped.
+                    </div>
+                </div>
+
+                <div id="liveStreamCancelledToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Live Stream</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Live stream schedule is cancelled.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="/vendors/video-js/8.23.4/video.min.js"></script>
+    <script src="/vendors/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

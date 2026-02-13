@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Settings - StreamTFHD</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/vendors/tabler/3.36.1/tabler-icons.min.css">
+    <link href="/vendors/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+  <body id="body">
+    <nav class="navbar fixed-top navbar-theme">
+        <div class="container-fluid">
+            <div>
+                <img src="assets/streamtfhd-logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                <span>StreamTFHD</span>
+            </div>
+            <div class="d-flex">
+                <i id="themeToggle" class="ti ti-sun me-3 cursor-pointer"></i>
+                <i class="ti ti-bell"></i>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <a href="/" class="sidebar-item">
+            <i class="ti ti-broadcast"></i>
+            <span>Streams</span>
+        </a>
+        <a href="/gallery" class="sidebar-item">
+            <i class="ti ti-video"></i>
+            <span>Gallery</span>
+        </a>
+        <a href="/history" class="sidebar-item">
+            <i class="ti ti-history"></i>
+            <span>History</span>
+        </a>
+        <div class="dropdown sidebar-item profile">
+            <a href="#" class="sidebar-item profile sidebar-item-profile" data-bs-toggle="dropdown" aria-expanded="false">
+                <img id="sidebarAvatar" class="sidebar-img-profile" src="assets/default-user-photo-profile.svg">
+                <span class="sidebar-text-profile">Profile</span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item small d-inline-flex align-items-center" href="/settings"><i class="ti ti-settings me-2"></i> Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item small d-inline-flex align-items-center" href="/logout"><i class="ti ti-logout me-2"></i> Sign Out</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main id="content" class="content">
+        <div class="container-fluid">
+            <div>
+                <div>
+                    <h2 class="text-primary-color">Settings</h2>
+                    <p class="small">Manage your account and preferences</p>
+                </div>
+            </div>
+        </div>
+        <div id="alertContainer"></div>
+        <div class="container-fluid mt-5">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false"><i class="ti ti-user"></i> Profile</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-tab-pane" type="button" role="tab" aria-controls="security-tab-pane" aria-selected="false"><i class="ti ti-shield-lock"></i> Security</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs-tab-pane" type="button" role="tab" aria-controls="logs-tab-pane" aria-selected="false"><i class="ti ti-shield-lock"></i> Logs</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                    <div class="settings-pane-container">
+                        <div class="settings-pane-header">
+                            <h5 class="text-primary-color">Profile Settings</h5>
+                        </div>
+                        <div class="settings-pane-body mt-3">
+                            <div id="alertContainerUpdateProfile" class="w-100"></div>
+                            <div class="fw-bold">Profile photo</div>
+                            <div class="d-flex mt-3">
+                                <div class="position-relative">
+                                    <div class="settings-pane-photo-profile-container">
+                                        <img id="avatar" src="assets/default-user-photo-profile.svg">
+                                    </div>
+                                    <label class="settings-pane-photo-profile-pencil-container">
+                                        <span><i class="ti ti-pencil settings-pane-photo-profile-pencil"></i></span>
+                                        <input
+                                                type="file"
+                                                id="profileImageUpload"
+                                                class="d-none"
+                                                accept="image/png, image/jpeg, image/gif"
+                                            >
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column ms-3 mt-auto mb-auto">
+                                    <span class="small">Upload a new photo</span>
+                                    <span class="small">Maximum file size: 2MB</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Username
+                            </div>
+                            <div class="mt-1">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-user"></i></span>
+                                    <input id="username" type="text" class="form-control" placeholder="Username">
+                                </div>
+                                <div id="usernameInvalid" class="invalid-feedback">Please fill the username form.</div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="button" class="btn btn-primary-custom" onclick="main.view.submitUpdateProfile();">Save Profile Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="security-tab-pane" role="tabpanel" aria-labelledby="security-tab" tabindex="0">
+                    <div class="settings-pane-container">
+                        <div class="settings-pane-header">
+                            <h5 class="text-primary-color">Security Settings</h5>
+                        </div>
+                        <div class="settings-pane-body mt-3">
+                            <div id="alertContainerUpdatePassword" class="w-100"></div>
+                            <div>
+                                Current password
+                            </div>
+                            <div>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text"><i class="ti ti-lock"></i></span>
+                                    <input id="currentPassword" type="password" class="form-control" placeholder="Current password">
+                                </div>
+                                <div id="currentPasswordInvalid" class="invalid-feedback">Please fill the current password form.</div>
+                            </div>
+                            <div class="mt-3">
+                                New password
+                            </div>
+                            <div>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text"><i class="ti ti-lock"></i></span>
+                                    <input id="newPassword" type="password" class="form-control" placeholder="New password">
+                                </div>
+                                <div id="newPasswordInvalid" class="invalid-feedback">Please fill the new password form.</div>
+                                <div>
+                                    <span class="extra-small d-none">Password must be at least 8 characters and include uppercase, lowercase and a number</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Confirm New Password
+                            </div>
+                            <div>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text"><i class="ti ti-lock"></i></span>
+                                    <input id="confirmPassword" type="password" class="form-control" placeholder="Confirm New Password">
+                                </div>
+                                <div id="confirmPasswordInvalid" class="invalid-feedback">Please fill the confirm password form.</div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="button" class="btn btn-primary-custom" onclick="main.view.submitUpdatePassword();">Change Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="logs-tab-pane" role="tabpanel" aria-labelledby="logs-tab" tabindex="0">
+                    <div class="settings-pane-container">
+                        <div class="settings-pane-header logs-pane-header">
+                            <div class="mt-auto mb-auto">
+                                <h5 class="text-primary-color">Application Logs</h5>
+                            </div>
+                            <div class="logs-pane-buttons-container">
+                                <div class="logs-pane-buttons-filter-container">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1"><i class="ti ti-search"></i></span>
+                                        <input id="searchLog" type="text" class="form-control" placeholder="Filter logs...">
+                                    </div>
+                                </div>
+                                <div class="logs-pane-buttons-lines-container">
+                                    <div class="dropdown logs-pane-buttons-lines">
+                                        <button id="logsLastLine" class="btn btn-secondary-custom dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" value="100">
+                                            Last 100 lines
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="main.view.getLogLastLine(100);">Last 100 lines</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="main.view.getLogLastLine(200);">Last 200 lines</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="main.view.getLogLastLine(500);">Last 500 lines</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="main.view.getLogLastLine(1000);">Last 1000 lines</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="logs-pane-buttons-refresh-container">
+                                    <button type="button" class="btn btn-secondary-custom" onclick="main.view.refreshLogs();">
+                                        <i class="ti ti-refresh"></i>
+                                        <span>Refresh</span>
+                                    </button>
+                                </div>
+                                <div class="logs-pane-buttons-clear-container">
+                                    <button type="button" class="btn btn-danger-custom" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                                        <i class="ti ti-trash"></i>
+                                        <span>Clear</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="alertContainerLogs" class="mt-3 w-100"></div>
+                        <div class="d-flex logs-pane-body mt-3 w-100">
+                            <div id="logContainer" class="log-container overflow-auto">
+                                <div id="noLogsFound">
+                                    <p class="text-center extra-small mt-4">No logs found</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <!-- Position it: -->
+            <!-- - `.toast-container` for spacing between toasts -->
+            <!-- - `top-0` & `end-0` to position the toasts in the upper right corner -->
+            <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+
+                <!-- Then put toasts within -->
+                <div id="checkCredentialNetworkErrorToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Check Credentials</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Check credentials failed.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="clearLogsModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="delteStreamModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Clear Logs</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to clear logs? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger-custom" onclick="main.view.clearLogs();">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="/vendors/video-js/8.23.4/video.min.js"></script>
+    <script src="/vendors/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendors/ansi_up/5.1.0/ansi_up.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

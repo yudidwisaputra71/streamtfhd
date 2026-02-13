@@ -1,0 +1,10 @@
+[package]
+name = "streamtfhd-reset-password"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sqlx = { version = "0.8.6", features = [ "postgres", "runtime-tokio-native-tls", "macros" ] }
+dotenvy = "0.15"
+argon2 = { version = "0.5.3", features = ["std"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
