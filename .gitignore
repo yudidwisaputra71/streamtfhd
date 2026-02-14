@@ -4,7 +4,7 @@ streamtfhd-frontend/.env
 streamtfhd-backend/target/
 streamtfhd-backend/Cargo.lock
 streamtfhd-backend/uploads/
-streamtfhd-backend/streamtfhd.log
+streamtfhd-backend/app.log
 streamtfhd-backend/.env
 streamtfhd-reset-password/target/
 streamtfhd-reset-password/.env
