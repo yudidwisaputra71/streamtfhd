@@ -82,7 +82,7 @@ Then :
 CREATE USER your-user WITH PASSWORD 'your-password';
 CREATE DATABASE streamtfhd OWNER your-user;
 ```
-*Change `your-user` with the user you want to create and `your-password` with the password you want to user.*
+*Change `your-user` with the user you want to create and `your-password` with the password you want to use.*
 
 ### 2. Connect to the database
 Still inside psql:
@@ -196,7 +196,7 @@ Or you can just restart your current shell session.
 ## Deploy it to production
 This project can be deployed to any Linux distributions as long it uses `systemd` as init. The app will run under `systemd` as a service (daemon) and by `streamtfhd` user. It will write the logs to `/var/log/streamtfhd/app.log` instead of `systemd journal`. Only fatal errors of the app (like startup errors about database, env, logs, etc.) logged to `systemd journal`. If you want to debug the app, make sure you read those logs too.
 
-### Create database and database dser
+### Create database and database user
 StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database.
 
 #### 1. Create user + database
@@ -210,7 +210,7 @@ Then :
 CREATE USER your-user WITH PASSWORD 'your-password';
 CREATE DATABASE streamtfhd OWNER your-user;
 ```
-*Change `your-user` with the user you want to create and `your-password` with the password you want to user.*
+*Change `your-user` with the user you want to create and `your-password` with the password you want to use.*
 
 #### 2. Connect to the database
 Still inside psql:
@@ -265,30 +265,17 @@ cargo build --release
 cd ../
 ```
 
-### Configure the env file for frontend
-```bash
-cd streamtfhd-frontend
-cp env.prod .prod
-cd ../
-```
-
-### Configure the env file for backend
-```bash
-cd streamtfhd-backend
-cp env.prod .prod
-```
-
-Edit the `.env` with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME, JWT_SECRET_KEY, FRONTEND_HOST and FRONTEND_PORT with the valid value and leave the others with default value. As a reminder, JWT_SECRET_KEY is vital. StreamTFHD uses HS256 algorithm, which means the JWT_SECRET_KEY must be 32 (or more) bytes lenght.
-
-```bash
-cd ../
-```
-
 ### Install it to the system
 The installer is a `bash` script. Make sure you run it with `sudo` or equivalent. It will install all the app files to the system, make sure you are not get any error(s) in the installation process. The error message(s) will be appear in the terminal if you get any of it. To install it to the system, run this command:
 ```bash
 sudo ./install.sh
 ```
+
+### Configure the env file for frontend
+Edit `/etc/streamtfhd/streamtfhd-frontend.env` file with your favorite editor.
+
+### Configure the env file for backend
+Edit `/etc/streamtfhd/streamtfhd-backend.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME, JWT_SECRET_KEY, FRONTEND_HOST and FRONTEND_PORT with the valid value and leave the others with default value. As a reminder, JWT_SECRET_KEY is vital. StreamTFHD uses HS256 algorithm for JWT, which means the JWT_SECRET_KEY must be 32 (or more) bytes lenght.
 
 ### Configure the frontend
 The frontend is HTML, CSS, and JavaScript. The frontend need to know what the port of the backend, what the host of the backend, what HTTP protocol should use (like unencrypted HTTP or secure and encrypted HTTPS), what WebSocket protocol should use (like unencrypted WebSocket or secure and encrypted WebSocket).
