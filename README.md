@@ -15,13 +15,121 @@ A simple YouTube streaming platform.
 * `certbot` (if you're using SSL/TLS)
 * `python3-certbot-nginx` (if you're using SSL/TLS. If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
 
+# Run In Development Environment
+To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
+
+## Build the project
+To build the frontend, run these commands :
+```bash
+cd streamtfhd-frontend
+cargo build
+cd ../
+```
+
+To build the backend, run these commands :
+```bash
+cd streamtfhd-backend
+cargo build
+cd ../
+```
+
+## Create database and database dser
+StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database.
+
+### 1. Create user + database
+Login as postgres :
+```bash
+sudo -u postgres psql
+```
+
+Then :
+```sql
+CREATE USER your-user WITH PASSWORD 'your-password';
+CREATE DATABASE streamtfhd OWNER your-user;
+```
+*Change `your-user` with the user you want to create and `your-password` with the password you want to user.*
+
+### 2. Connect to the database
+Still inside psql:
+```sql
+\c streamtfhd
+```
+
+### 3. Give schema permissions
+```sql
+GRANT USAGE, CREATE ON SCHEMA public TO your-user;
+```
+*Change `your user` with the user that was you create.*
+
+### 4. Make your user own the schema
+Sometimes public schema is still owned by postgres, and this causes permission issues.
+
+Run:
+```sql
+ALTER SCHEMA public OWNER TO your-user;
+```
+*Change `your-user` with the user that was you create.*
+
+
+## Configure the env file for frontend
+```bash
+cd streamtfhd-frontend
+cp env.dev .env
+cd ../
+```
+
+## Configure the tnv file for backend
+```bash
+cd streamtfhd-backend
+cp env.dev .env
+```
+
+Edit the `.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME with the valid value and leave the others with default value.
+
+## Configure the frontend
+The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT.
+
+Edit `streamtfhd-frontend/src/html/js/config.js` file with your favorite editor.
+
+Fill the BACKEND_HOST object with `localhost`, and fill the BACKEND_PORT object with `8000` value, so it will looks like this:
+```javascript
+const base_config = {
+    HTTP_PROTOCOL       : "http://",        // HTTP protocol.
+    WEBSOCKET_PROTOCOL  : "ws://",          // Websocket protocol.
+    BACKEND_HOST        : "localhost",      // Backend host.
+    BACKEND_PORT        : 8000,             // Backend port.
+    BACKEND_PATH        : null,             // Backend path. Fill it with null if you don't use backend path.
+};
+```
+
+## Run StreamTFHD
+To run StreamTFHD, you can use cargo.
+
+To run the frontend :
+```bash
+cd streamtfhd-frontend
+cargo run
+```
+
+To run the backend :
+```bash
+cd streamtfhd-backend
+cargo run
+```
+
+## Open it from the browser
+You can open it from the browser through `http://localhost:8080`
+
+## The backend logs
+You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs tab, in the web app.
+
 # Quick Setup And Installtion
 Comming soon....
 
 # Manual Installation
 This is the step by step of manual configuration and installation.
 
-## Install Dependency Packages
+## Install dependency packages
 To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and in runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
 
 At first we need to do update, use this command :
@@ -44,87 +152,49 @@ After that, use this command to configures your current bash shell session to us
 source "$HOME/.cargo/env"
 ```
 
-## Run In Development Environment
-To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
+Or you can just restart your current shell session.
 
-### Build The Project
-To build the frontend, run these commands :
-```bash
-cd streamtfhd-frontend
-cargo build
-cd ../
-```
-
-To build the backend, run these commands :
-```bash
-cd streamtfhd-backend
-cargo build
-cd ../
-```
-
-### Create Database and Database User
-StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database. About how to create a database and a user step by step is not covered here, you can use search engine or AI to ask how to do that or do it by yourself.
-
-### Configure The Env File For Frontend
-```bash
-cd streamtfhd-frontend
-cp env.dev .env
-cd ../
-```
-
-### Configure The Env File For Backend
-```bash
-cd streamtfhd-backend
-cp env.dev .env
-```
-
-Edit the `.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME with the valid value and leave the others with default value.
-
-### Configure The Frontend
-The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT.
-
-Edit `streamtfhd-frontend/src/html/js/config.js` file with your favorite editor.
-
-Fill the BACKEND_HOST object with `localhost`, and fill the BACKEND_PORT object with `8000` value, so it will looks like this:
-```javascript
-const base_config = {
-    HTTP_PROTOCOL       : "http://",        // HTTP protocol.
-    WEBSOCKET_PROTOCOL  : "ws://",          // Websocket protocol.
-    BACKEND_HOST        : "localhost",      // Backend host.
-    BACKEND_PORT        : 8000,             // Backend port.
-    BACKEND_PATH        : null,             // Backend path. Fill it with null if you don't use backend path.
-};
-```
-
-### Run The StreamTFHD
-To run StreamTFHD, you can use cargo.
-
-To run the frontend :
-```bash
-cd streamtfhd-frontend
-cargo run
-```
-
-To run the backend :
-```bash
-cd streamtfhd-backend
-cargo run
-```
-
-### Open It From The Browser
-You can open it from the browser through `http://localhost:8080`
-
-### The Backend Logs
-You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs tab, in the web app.
-
-
-## Deploy It To Production
+## Deploy it to production
 This project can be deployed to any Linux distributions as long it uses `systemd` as init. The app will run under `systemd` as a service (daemon) and by `streamtfhd` user. It will write the logs to `/var/log/streamtfhd/app.log` instead of `systemd journal`. Only fatal errors of the app (like startup errors about database, env, logs, etc.) logged to `systemd journal`. If you want to debug the app, make sure you read those logs too.
 
-### Create Database and Database User
-StreamTFHD uses postgresql as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database. About how to create a database and a user step by step is not covered here, you can use search engine or AI to ask how to do that or do it by yourself.
+### Create database and database dser
+StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database.
 
-### Build The Project
+#### 1. Create user + database
+Login as postgres :
+```bash
+sudo -u postgres psql
+```
+
+Then :
+```sql
+CREATE USER your-user WITH PASSWORD 'your-password';
+CREATE DATABASE streamtfhd OWNER your-user;
+```
+*Change `your-user` with the user you want to create and `your-password` with the password you want to user.*
+
+#### 2. Connect to the database
+Still inside psql:
+```sql
+\c streamtfhd
+```
+
+#### 3. Give schema permissions
+```sql
+GRANT USAGE, CREATE ON SCHEMA public TO your-user;
+```
+*Change `your user` with the user that was you create.*
+
+#### 4. Make your user own the schema
+Sometimes public schema is still owned by postgres, and this causes permission issues.
+
+Run:
+```sql
+ALTER SCHEMA public OWNER TO your-user;
+```
+*Change `your-user` with the user that was you create.*
+
+### Build the project
 To build for production, we will use `cargo build --release` command. It will optimize the output binary for production, it will take longer to build, but it will much faster in runtime than the debug build.
 
 To build the frontend, run these commands:
@@ -141,14 +211,14 @@ cargo build --release
 cd ../
 ```
 
-### Configure The Env File For Frontend
+### Configure the env file for frontend
 ```bash
 cd streamtfhd-frontend
 cp env.prod .prod
 cd ../
 ```
 
-### Configure The Env File For Backend
+### Configure the env file for backend
 ```bash
 cd streamtfhd-backend
 cp env.prod .prod
@@ -160,13 +230,13 @@ Edit the `.env` with your favourite editor. Change the needed value like DATABAS
 cd ../
 ```
 
-### Install It To The System
+### Install it to the system
 The installer is a `bash` script. Make sure you run it with `sudo` or equivalent. It will install all the app files to the system, make sure you are not get any error(s) in the installation process. The error message(s) will be appear in the terminal if you get any of it. To install it to the system, run this command:
 ```bash
 sudo ./install.sh
 ```
 
-### Configure The Frontend
+### Configure the frontend
 The frontend is HTML, CSS, and JavaScript. The frontend need to know what the port of the backend, what the host of the backend, what HTTP protocol should use (like unencrypted HTTP or secure and encrypted HTTPS), what WebSocket protocol should use (like unencrypted WebSocket or secure and encrypted WebSocket).
 
 Edit the `/var/www/streamtfhd/html/js/config.js` file with your favorite editor.
@@ -195,7 +265,7 @@ const base_config = {
 ```
 *Notes : Change your BACKEDN_HOST value with your real backend host.*
 
-### Configure NGINX As A Reverse Proxy
+### Configure NGINX as a reverse proxy
 NGINX play a big role here. It's like a gate for this app to the internet. Basically, the app just run locally in the server and then NGINX comes to make the app available for the user(s) through internet. Make sure you are not miss any details to configure it or you will not able to make this app online.
 
 Add NGINX configuration file:
@@ -385,7 +455,7 @@ sudo systemctl restart nginx
 ### Start StreamTFHD service
 To start both StreamTFHD service backend and frontend, you can use `systemctl` command. Make sure `postgresql` service already running, if not, the StreamTFHD service will fail to start.
 
-#### Start StreamTFHD Frontend
+#### Start StreamTFHD frontend
 
 To start the frontend, use this command:
 ```bash
@@ -402,7 +472,7 @@ Check is your frontend service is running or not:
 sudo systemctl status streamtfhd-frontend.service
 ```
 
-#### Start StreamTFHD Backend
+#### Start StreamTFHD backend
 
 To start the backend, use this command:
 ```bash
@@ -421,7 +491,7 @@ sudo systemctl status streamtfhd-backend.service
 
 And now you can access the app through browser in `http://your-host`
 
-### Make The App Service Survive Restart/Reboot
+### Make the app service survive restart/reboot
 To make the app survive from restart or reboot, you must make the app start automatically at boot. To do that, you can use `systemd` through `systemctl` command.
 
 To make the frontend start automatically at boot, use this command:
