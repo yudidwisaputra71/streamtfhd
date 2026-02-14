@@ -1,14 +1,15 @@
 #!/bin/bash
 
-#source /etc/os-release
+set -euo pipefail
 
-set -e
+source /etc/os-release
 
-ID="ubuntu"
+#ID="ubuntu"
 
 SERVER_HOST=""
 SERVER_PORT= 
-DATABASE_NAME=""
+DATABASE_NAME="streamtfhd"
+DATABASE_USER="streamtfhd"
 DATABASE_PASSWORD=""
 DEPENDENCIES_UBUNTU=("build-essential" "pkg-config" "libssl-dev" "nginx" "ffmpeg" "certbot" "python3-certbot-nginx" "git" "postgresql" "curl")
 DEPENDENCIES_DEBIAN=("build-essential" "pkg-config" "libssl-dev" "nginx" "ffmpeg" "certbot" "python3-certbot-nginx" "git" "postgresql" "curl")
@@ -154,14 +155,268 @@ function install_rust_if_not_installed() {
     fi
 }
 
+function create_database_and_user_and_grant_privileges_to_the_user() {
+    echo "== PostgreSQL setup: db=$DATABASE_NAME user=$DATABASE_USER =="
+
+    sudo -u postgres psql -v ON_ERROR_STOP=1 <<EOF
+DO \$\$
+BEGIN
+    -- Create user if not exists
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '$DATABASE_USER') THEN
+        CREATE ROLE $DATABASE_USER LOGIN PASSWORD '$DATABASE_PASSWORD';
+        RAISE NOTICE 'User $DATABASE_USER created.';
+    ELSE
+        RAISE NOTICE 'User $DATABASE_USER already exists.';
+        -- Ensure password is updated
+        ALTER ROLE $DATABASE_USER WITH PASSWORD '$DATABASE_PASSWORD';
+        RAISE NOTICE 'User $DATABASE_USER password ensured.';
+    END IF;
+
+    -- Create database if not exists
+    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '$DATABASE_NAME') THEN
+        CREATE DATABASE $DATABASE_NAME;
+        RAISE NOTICE 'Database $DATABASE_NAME created.';
+    ELSE
+        RAISE NOTICE 'Database $DATABASE_NAME already exists.';
+    END IF;
+END
+\$\$;
+
+-- Ensure ownership
+ALTER DATABASE $DATABASE_NAME OWNER TO $DATABASE_USER;
+
+-- Ensure connect permission
+GRANT CONNECT ON DATABASE $DATABASE_NAME TO $DATABASE_USER;
+EOF
+
+    # Now apply schema + default privileges INSIDE the database
+    sudo -u postgres psql -v ON_ERROR_STOP=1 -d "$DATABASE_NAME" <<EOF
+-- Ensure schema permissions
+GRANT USAGE, CREATE ON SCHEMA public TO $DATABASE_USER;
+
+-- Ensure user can read/write all existing tables
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $DATABASE_USER;
+
+-- Ensure user can use sequences (important for BIGINT IDENTITY / SERIAL)
+GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO $DATABASE_USER;
+
+-- Ensure future tables automatically grant privileges
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $DATABASE_USER;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO $DATABASE_USER;
+EOF
+
+    echo "== Done. User + database are ready. =="
+}
+
+function clone_streamtfhd_repository() {
+    git clone https://github.com/yudidwisaputra71/streamtfhd.git
+}
+
+function change_working_directory_to_streamtfhd() {
+    cd streamtfhd
+}
+
+function build_the_frontend() {
+    cd streamtfhd-frontend
+
+    cargo build --release
+
+    cd ../
+}
+
+function build_the_backend() {
+    cd streamtfhd-backend
+
+    cargo build --release
+
+    cd ../
+}
+
+function create_streamtfhd_user() {
+    if id -u streamtfhd >/dev/null 2>&1; then
+        echo "User streamtfhd already exists. Skipping creation."
+        return 0
+    fi
+
+    adduser --system --no-create-home --group streamtfhd
+}
+
+function create_var_www_dir_if_not_exist() {
+    if [ ! -d /var/www ]; then
+        mkdir -v /var/www;
+
+        if [ $? -gt 0 ]; then
+            echo "Failed to create /var/www directory.";
+
+            exit 432;
+        fi
+
+        chown root:root /var/www
+    fi
+}
+
+function create_var_www_streamfhd_for_frontend() {
+    if [ ! -d /var/www/streamtfhd ]; then
+        mkdir -v /var/www/streamtfhd
+
+        if [ $? -gt 0 ]; then
+            echo "Failed to create /var/www/streamtfhd directory.";
+
+            exit 431;
+        fi
+
+        chown streamtfhd:streamtfhd /var/www/streamtfhd
+    fi
+}
+
+function cp_frontend_contents_to_var_www_streamtfhd_dir() {
+    cp -rv streamtfhd-frontend/src/html /var/www/streamtfhd/
+
+    chown -Rv streamtfhd:streamtfhd /var/www/streamtfhd
+}
+
+function create_etc_streamtfhd_directory() {
+    if [ ! -d /etc/streamtfhd ]; then
+        mkdir -v /etc/streamtfhd
+
+        chmod -v 600 /etc/streamtfhd
+
+        chown -v root:root /etc/streamtfhd
+    fi
+}
+
+function cp_prod_env_file_backend_to_etc_streamtfhd() {
+    cp -v streamtfhd-backend/env.prod /etc/streamtfhd/streamtfhd-backend.env
+
+    chown -v streamtfhd:streamtfhd /etc/streamtfhd/streamtfhd-backend.env
+
+    chmod -v 640 /etc/streamtfhd/streamtfhd-backend.env
+}
+
+function cp_prod_env_file_frontend_to_etc_streamtfhd() {
+    cp -v streamtfhd-frontend/env.prod /etc/streamtfhd/streamtfhd-frontend.env
+
+    chown -v streamtfhd:streamtfhd /etc/streamtfhd/streamtfhd-frontend.env
+
+    chmod -v 640 /etc/streamtfhd/streamtfhd-frontend.env
+}
+
+function cp_backend_bin_to_usr_local_bin() {
+    if [ -f streamtfhd-backend/target/release/streamtfhd-backend ]; then
+        cp -v streamtfhd-backend/target/release/streamtfhd-backend /usr/local/bin/streamtfhd-backend
+    else
+        echo "streamtfhd-backend/target/release/streamtfhd-backend is not found. Make sure you build the streamtfhd-backend and make sure you build it with --release option.";
+
+        exit 899;
+    fi
+}
+
+function cp_frontend_bin_to_usr_local_bin() {
+    if [ -f streamtfhd-frontend/target/release/streamtfhd-frontend ]; then
+        cp -v streamtfhd-frontend/target/release/streamtfhd-frontend /usr/local/bin/streamtfhd-frontend
+    else
+        echo "streamtfhd-frontend/target/release/streamtfhd-frontend is not found. Make sure you build the streamtfhd-frontend and make sure you build it with --release option.";
+
+        exit 1;
+    fi
+}
+
+function create_systemd_unit_file_for_backend() {
+    cat <<EOF > /etc/systemd/system/streamtfhd-backend.service
+[Unit]
+Description=StreamTFHD Backend Service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=streamtfhd
+Group=streamtfhd
+
+ExecStart=/usr/local/bin/streamtfhd-backend
+
+Restart=no
+
+StandardOutput=journal
+StandardError=journal
+
+EnvironmentFile=/etc/streamtfhd/streamtfhd-backend.env
+
+WorkingDirectory=/var/www/streamtfhd
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+function create_systemd_unit_file_for_frontend() {
+    cat <<EOF > /etc/systemd/system/streamtfhd-frontend.service
+[Unit]
+Description=StreamTFHD Frontend Service
+After=network.target streamtfhd-backend.service
+
+[Service]
+Type=simple
+User=streamtfhd
+Group=streamtfhd
+
+ExecStart=/usr/local/bin/streamtfhd-frontend
+
+Restart=no
+
+EnvironmentFile=/etc/streamtfhd/streamtfhd-frontend.env
+
+StandardOutput=journal
+StandardError=journal
+
+WorkingDirectory=/var/www/streamtfhd
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+function create_log_dir() {
+    if [ ! -d /var/log/streamtfhd ]; then
+        mkdir -v /var/log/streamtfhd
+    fi
+    
+    chown -v streamtfhd:streamtfhd /var/log/streamtfhd
+}
+
 function main() {
     get_server_host
     get_server_port
     get_database_name
     get_database_password
+    
     #if_the_distribution_is_not_in_the_supported_list
     #install_dependencies
     #install_rust_if_not_installed
+
+    #clone_streamtfhd_repository
+    #change_working_directory_to_streamtfhd
+
+    #create_database_and_user_and_grant_privileges_to_the_user
+
+    #build_the_frontend
+    #build_the_backend
+
+    #create_streamtfhd_user
+    #create_var_www_dir_if_not_exist
+    #create_var_www_streamfhd_for_frontend
+    #cp_frontend_contents_to_var_www_streamtfhd_dir
+    #create_etc_streamtfhd_directory
+    #cp_prod_env_file_backend_to_etc_streamtfhd
+    #cp_prod_env_file_frontend_to_etc_streamtfhd
+    #cp_backend_bin_to_usr_local_bin
+    #cp_frontend_bin_to_usr_local_bin
+    #create_systemd_unit_file_for_backend
+    #create_systemd_unit_file_for_frontend
+    #create_log_dir
+
 }
 
 main
