@@ -38,7 +38,7 @@ fn spawn_ffmpeg(
     stream_key: &String,
     stream_loop: i32
 ) -> Result<Child, std::io::Error> {
-    info!("spawning ffmpeg using {}", video);
+    info!("Spawning ffmpeg using {}", video);
 
     let youtube_rtmp = format!("{}/{}", rtmp_url, stream_key);
 
@@ -142,14 +142,6 @@ fn monitor_ffmpeg(
         }
     });
 }
-
-/*
-pub async fn restart_stream(
-    live_stream_id: &String,
-    state: &Arc<LiveStreamState>,
-    pool: &Pool<Postgres>
-) -> 
-*/
 
 pub async fn start_stream(
     live_stream_data: &LiveStreamData,
