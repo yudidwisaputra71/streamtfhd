@@ -68,7 +68,7 @@ cargo build
 cd ../
 ```
 
-## Create database and database dser
+## Create database and database user
 StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database.
 
 ### 1. Create user + database

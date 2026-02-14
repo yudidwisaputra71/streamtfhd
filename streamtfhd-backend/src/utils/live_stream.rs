@@ -143,44 +143,13 @@ fn monitor_ffmpeg(
     });
 }
 
-pub async fn write_history(
+/*
+pub async fn restart_stream(
+    live_stream_id: &String,
     state: &Arc<LiveStreamState>,
-    stream_id: i64,
-    pool: &Pool<Postgres>,
-    final_status: StreamStatus
-) {
-    if let Some((_, job)) = state.jobs.remove(&stream_id) {
-        info!(%stream_id, "writing stream history");
-
-        let owner = match live_stream_write_history::get_live_stream_owner(stream_id, &pool).await {
-            Some(val) => val,
-            None => String::from("None")
-        };
-
-        let start_time = match job.actual_start {
-            Some(val) => val,
-            None => 0
-        };
-
-        let end_status = match final_status {
-            StreamStatus::Done => String::from("Done"),
-            StreamStatus::Stopped => String::from("Stopped"),
-            StreamStatus::Cancelled => String::from("Canceled"),
-            StreamStatus::Failed(_) => String::from("Failed"),
-            _ => String::from("Unknown")
-        };
-
-        let data = History {
-            owner: owner,
-            live_stream: stream_id,
-            start_time: start_time,
-            end_time: current_unix_timestamp() as i64,
-            end_status: end_status
-        };
-
-        live_stream_write_history::write_history(&data, &pool).await;
-    }
-}
+    pool: &Pool<Postgres>
+) -> 
+*/
 
 pub async fn start_stream(
     live_stream_data: &LiveStreamData,
@@ -299,6 +268,45 @@ pub async fn start_stream(
     });
 
     Ok(stream_id)
+}
+
+pub async fn write_history(
+    state: &Arc<LiveStreamState>,
+    stream_id: i64,
+    pool: &Pool<Postgres>,
+    final_status: StreamStatus
+) {
+    if let Some((_, job)) = state.jobs.remove(&stream_id) {
+        info!(%stream_id, "writing stream history");
+
+        let owner = match live_stream_write_history::get_live_stream_owner(stream_id, &pool).await {
+            Some(val) => val,
+            None => String::from("None")
+        };
+
+        let start_time = match job.actual_start {
+            Some(val) => val,
+            None => 0
+        };
+
+        let end_status = match final_status {
+            StreamStatus::Done => String::from("Done"),
+            StreamStatus::Stopped => String::from("Stopped"),
+            StreamStatus::Cancelled => String::from("Canceled"),
+            StreamStatus::Failed(_) => String::from("Failed"),
+            _ => String::from("Unknown")
+        };
+
+        let data = History {
+            owner: owner,
+            live_stream: stream_id,
+            start_time: start_time,
+            end_time: current_unix_timestamp() as i64,
+            end_status: end_status
+        };
+
+        live_stream_write_history::write_history(&data, &pool).await;
+    }
 }
 
 pub async fn stop_stream_internal(
