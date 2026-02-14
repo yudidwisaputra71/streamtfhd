@@ -18,6 +18,31 @@ A simple YouTube streaming platform.
 # Run In Development Environment
 To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
 
+## Install dependency packages
+To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and in runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
+
+At first we need to do update, use this command :
+```bash
+sudo apt update
+```
+
+And then install dependency packages (exclude `rustc` and `cargo`) using this command :
+```bash
+sudo apt install build-essential pkg-config libssl-dev postgresql curl nginx ffmpeg certbot python3-certbot-nginx -y
+```
+
+For `rustc` and `cargo`, we will install the lates version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+```
+
+After that, use this command to configures your current bash shell session to use the Rust programming environment :
+```bash
+source "$HOME/.cargo/env"
+```
+
+Or you can just restart your current shell session.
+
 ## Build the project
 To build the frontend, run these commands :
 ```bash
