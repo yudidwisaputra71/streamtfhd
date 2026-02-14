@@ -43,6 +43,16 @@ source "$HOME/.cargo/env"
 
 Or you can just restart your current shell session.
 
+## Clone this repository
+```bash
+git clone https://github.com/yudidwisaputra71/streamtfhd.git
+```
+
+## Change working directory to streamtfhd directory
+```bash
+cd streamtfhd
+```
+
 ## Build the project
 To build the frontend, run these commands :
 ```bash
@@ -95,6 +105,10 @@ ALTER SCHEMA public OWNER TO your-user;
 ```
 *Change `your-user` with the user that was you create.*
 
+Exit psql :
+```sql
+\q
+```
 
 ## Configure the env file for frontend
 ```bash
@@ -218,6 +232,21 @@ Run:
 ALTER SCHEMA public OWNER TO your-user;
 ```
 *Change `your-user` with the user that was you create.*
+
+Exit psql :
+```sql
+\q
+```
+
+### Clone this repository
+```bash
+git clone https://github.com/yudidwisaputra71/streamtfhd.git
+```
+
+### Change working directory to streamtfhd directory
+```bash
+cd streamtfhd
+```
 
 ### Build the project
 To build for production, we will use `cargo build --release` command. It will optimize the output binary for production, it will take longer to build, but it will much faster in runtime than the debug build.
