@@ -154,49 +154,45 @@ function install_rust_if_not_installed() {
 function create_database_and_user_and_grant_privileges_to_the_user() {
     echo "== PostgreSQL setup: db=$DATABASE_NAME user=$DATABASE_USER =="
 
+    # 1) Create user if not exists (allowed)
     sudo -u postgres psql -v ON_ERROR_STOP=1 <<EOF
 DO \$\$
 BEGIN
-    -- Create user if not exists
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '$DATABASE_USER') THEN
         CREATE ROLE $DATABASE_USER LOGIN PASSWORD '$DATABASE_PASSWORD';
         RAISE NOTICE 'User $DATABASE_USER created.';
     ELSE
         RAISE NOTICE 'User $DATABASE_USER already exists.';
-        -- Ensure password is updated
         ALTER ROLE $DATABASE_USER WITH PASSWORD '$DATABASE_PASSWORD';
         RAISE NOTICE 'User $DATABASE_USER password ensured.';
     END IF;
-
-    -- Create database if not exists
-    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '$DATABASE_NAME') THEN
-        CREATE DATABASE $DATABASE_NAME;
-        RAISE NOTICE 'Database $DATABASE_NAME created.';
-    ELSE
-        RAISE NOTICE 'Database $DATABASE_NAME already exists.';
-    END IF;
 END
 \$\$;
+EOF
 
--- Ensure ownership
+    # 2) Create database if not exists (MUST NOT be inside DO block)
+    DB_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DATABASE_NAME'")
+
+    if [ "$DB_EXISTS" != "1" ]; then
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE DATABASE $DATABASE_NAME;"
+        echo "Database $DATABASE_NAME created."
+    else
+        echo "Database $DATABASE_NAME already exists."
+    fi
+
+    # 3) Ensure ownership + connect
+    sudo -u postgres psql -v ON_ERROR_STOP=1 <<EOF
 ALTER DATABASE $DATABASE_NAME OWNER TO $DATABASE_USER;
-
--- Ensure connect permission
 GRANT CONNECT ON DATABASE $DATABASE_NAME TO $DATABASE_USER;
 EOF
 
-    # Now apply schema + default privileges INSIDE the database
+    # 4) Schema + table privileges (inside the DB)
     sudo -u postgres psql -v ON_ERROR_STOP=1 -d "$DATABASE_NAME" <<EOF
--- Ensure schema permissions
 GRANT USAGE, CREATE ON SCHEMA public TO $DATABASE_USER;
 
--- Ensure user can read/write all existing tables
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $DATABASE_USER;
-
--- Ensure user can use sequences (important for BIGINT IDENTITY / SERIAL)
 GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO $DATABASE_USER;
 
--- Ensure future tables automatically grant privileges
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $DATABASE_USER;
 
@@ -211,7 +207,7 @@ function clone_streamtfhd_repository() {
     if [ -d ./streamtfhd ]; then
         rm -Rf ./streamtfhd
     fi
-    
+
     git clone https://github.com/yudidwisaputra71/streamtfhd.git
 }
 
