@@ -846,7 +846,6 @@ export class IndexView {
         modal.hide();
     }
 
-    // here
     deleteStreamModal(id) {
         this.#deleteStreamId = id;
 
