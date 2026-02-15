@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -euo pipefail
+trap 'echo "Error on line $LINENO: $BASH_COMMAND" >&2' ERR
+set -x
 
 source /etc/os-release
 
@@ -205,10 +207,11 @@ EOF
 
 function clone_streamtfhd_repository() {
     if [ -d ./streamtfhd ]; then
-        rm -Rf ./streamtfhd
+        #rm -Rf ./streamtfhd
+        return
+    else 
+        git clone https://github.com/yudidwisaputra71/streamtfhd.git
     fi
-
-    git clone https://github.com/yudidwisaputra71/streamtfhd.git
 }
 
 function change_working_directory_to_streamtfhd() {
