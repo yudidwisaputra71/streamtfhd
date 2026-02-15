@@ -17,7 +17,7 @@ StreamTFHD is a simple YouTube streaming platform. It's a web app built in HTML,
 * `certbot` (if you're using SSL/TLS)
 * `python3-certbot-nginx` (if you're using SSL/TLS)
 
-*Notes: All of dependenciy packages listed here are Debian based packages. If you're using non Debian based Linux distribution, you can find the equivalent packages for your Linux distribution.*
+*Notes: All of dependency packages listed here are Debian based packages. If you're using non Debian based Linux distribution, you can find the equivalent packages for your Linux distribution.*
 
 # Run In Development Environment
 To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
