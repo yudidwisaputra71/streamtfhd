@@ -1,8 +1,9 @@
 #!/bin/bash
 
 set -euo pipefail
-trap 'echo "Error on line $LINENO: $BASH_COMMAND" >&2' ERR
-set -x
+
+# Uncomment it to debug this script
+#set -x
 
 source /etc/os-release
 
@@ -207,11 +208,10 @@ EOF
 
 function clone_streamtfhd_repository() {
     if [ -d ./streamtfhd ]; then
-        #rm -Rf ./streamtfhd
-        return
-    else 
-        git clone https://github.com/yudidwisaputra71/streamtfhd.git
+        rm -Rvf ./streamtfhd
     fi
+
+    git clone https://github.com/yudidwisaputra71/streamtfhd.git
 }
 
 function change_working_directory_to_streamtfhd() {
@@ -476,6 +476,10 @@ EOF
     fi
 }
 
+function restart_nginx_service() {
+    systemctl restart nginx
+}
+
 function reload_systemd_daemon() {
     systemctl daemon-reload
 }
@@ -506,6 +510,10 @@ function change_working_directory_to_streamtfhds_parent_dir() {
 
 function remove_cloned_repository() {
     rm -Rfv ./streamtfhd
+}
+
+function remove_installer_script() {
+    rm -v ./quick-setup-and-installation.sh
 }
 
 function main() {
@@ -545,6 +553,7 @@ function main() {
     set_frontend_config_js
 
     set_nginx_config_file
+    restart_nginx_service
 
     reload_systemd_daemon
 
@@ -558,6 +567,8 @@ function main() {
     change_working_directory_to_streamtfhds_parent_dir
 
     remove_cloned_repository
+
+    remove_installer_script
 }
 
 main
