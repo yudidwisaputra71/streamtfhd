@@ -97,6 +97,7 @@ function install_dependencies_debian() {
     if [ $packages == ""]; then
         echo "No need to install Debian dependencies"
     else
+        apt update
         apt install $packages -y
     fi
 }
@@ -107,6 +108,7 @@ function install_dependencies_ubuntu() {
     if [ $packages == ""]; then
         echo "No need to install Ubuntu dependencies"
     else
+        apt update
         apt install $packages -y
     fi
 }
