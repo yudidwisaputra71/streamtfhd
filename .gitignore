@@ -1,6 +1,7 @@
 streamtfhd-frontend/target/
 streamtfhd-frontend/Cargo.lock
 streamtfhd-frontend/.env
+streamtfhd-frontend/src/html/js/config.js
 streamtfhd-backend/target/
 streamtfhd-backend/Cargo.lock
 streamtfhd-backend/uploads/
