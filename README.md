@@ -22,7 +22,7 @@ StreamTFHD is a simple YouTube streaming platform. It's a web app built in HTML,
 # Run In Development Environment
 To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
 
-## Install dependency packages
+## 1. Install dependency packages
 To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and for runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
 
 At first we need to do update, use this command :
@@ -47,17 +47,17 @@ source "$HOME/.cargo/env"
 
 Or you can just restart your current shell session.
 
-## Clone this repository
+## 2. Clone this repository
 ```bash
 git clone https://github.com/yudidwisaputra71/streamtfhd.git
 ```
 
-## Change working directory to streamtfhd directory
+## 3. Change working directory to streamtfhd directory
 ```bash
 cd streamtfhd
 ```
 
-## Build the project
+## 4. Build the project
 To build the frontend, run these commands :
 ```bash
 cd streamtfhd-frontend
@@ -72,7 +72,7 @@ cargo build
 cd ../
 ```
 
-## Create database and database user
+## 5. Create database and database user
 StreamTFHD uses `postgresql` as database. Once you create a database and a user for it, it can create needed tables by itself. Make sure the user can create tables, read, and write to the database.
 
 ### 1. Create user + database
@@ -114,14 +114,14 @@ Exit psql :
 \q
 ```
 
-## Configure the env file for frontend
+## 6. Configure the env file for frontend
 ```bash
 cd streamtfhd-frontend
 cp env.dev .env
 cd ../
 ```
 
-## Configure the env file for backend
+## 7. Configure the env file for backend
 ```bash
 cd streamtfhd-backend
 cp env.dev .env
@@ -129,7 +129,7 @@ cp env.dev .env
 
 Edit the `.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME with the valid value and leave the others with default value.
 
-## Configure the frontend
+## 8. Configure the frontend
 The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT in `config.js` file.
 
 Edit `streamtfhd-frontend/src/html/js/config.js` file with your favorite editor.
@@ -145,7 +145,7 @@ const base_config = {
 };
 ```
 
-## Run StreamTFHD
+## 9. Run StreamTFHD
 To run StreamTFHD, you can use cargo.
 
 To run the frontend :
@@ -160,14 +160,21 @@ cd streamtfhd-backend
 cargo run
 ```
 
-## Open it from the browser
+## 10. Open it from the browser
 You can open it from the browser through `http://localhost:8080`
 
-## The backend logs
+## 11. The backend logs
 You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs, in the web app.
 
 # Quick Setup And Installtion
-Comming soon....
+To setup and install this app automatically into production server, run this command:
+```bash
+curl -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yudidwisaputra71/streamtfhd/refs/heads/main/quick-setup-and-installation.sh && chmod +x quick-setup-and-installation.sh && sudo ./quick-setup-and-installation.sh
+```
+
+*Notes: The automatic setup and installation script does not support SSL/TLS right now. If you want to use SSL/TLS, use manual setup and installation instead, or setup it manually alongside automatic setup and installation.*
+
+*Notes: If you use automatic setup and installation, the database user and the database is "streamtfhd".*
 
 # Manual Installation
 This is the step by step of manual configuration and installation.
