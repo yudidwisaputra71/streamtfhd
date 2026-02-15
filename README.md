@@ -169,7 +169,7 @@ You can read the backend logs through `streamtfhd-backend/app.log` file; or from
 # Quick Setup And Installation
 To setup and install this app automatically into production server, run this command:
 ```bash
-curl -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yudidwisaputra71/streamtfhd/refs/heads/main/quick-setup-and-installation.sh && chmod +x quick-setup-and-installation.sh && sudo ./quick-setup-and-installation.sh
+curl -s -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yudidwisaputra71/streamtfhd/refs/heads/main/quick-setup-and-installation.sh && chmod +x quick-setup-and-installation.sh && sudo ./quick-setup-and-installation.sh
 ```
 
 *Notes: The automatic setup and installation script does not support SSL/TLS right now. If you want to use SSL/TLS, use manual setup and installation instead, or setup it manually alongside automatic setup and installation.*
