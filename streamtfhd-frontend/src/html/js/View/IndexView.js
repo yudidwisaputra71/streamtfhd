@@ -642,6 +642,34 @@ export class IndexView {
                         break;
                     }
                 }
+                case "starting": {
+                    // Web
+                    statusContentWeb = `<i class="ti ti-circle-dot me-1"></i>
+                                        <span class="extra-small">Starting...</span>`;
+                    actionButtonContentWeb = `<button type="button" class="btn btn-sm btn-primary-custom me-2" onclick="return;">
+                                                <div class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                                </button>`;
+
+                    // Tablet
+                    statusContentTablet = `<i class="ti ti-circle-dot mt-auto mb-auto"></i>
+                                            <span class="video-card-status-badge">Starting...</span>`;
+                    actionButtonContentTablet = `<button class="btn btn-primary-custom btn-sm px-3" onclick="main.view.stopStream(${id});">
+                                                    <div class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
+                                                        <span class="sr-only"></span>
+                                                    </div>
+                                                </button>`;
+                    
+                    // Web
+                    scheduleContentWeb = `<span class="extra-small">--</span>`;
+
+                    // Tablet
+                    calendarContentTablet = `<div class="meta small">
+                                                    <i class="ti ti-calendar-check"></i>
+                                                    <span class="fw-bold">--</span>
+                                                </div>`;
+                }
             }
 
             scheduleContainerWeb.insertAdjacentHTML("beforeend", scheduleContentWeb);

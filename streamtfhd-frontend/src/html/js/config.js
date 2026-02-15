@@ -5,7 +5,7 @@ const base_config = {
     HTTP_PROTOCOL       : "http://",        // HTTP protocol.
     WEBSOCKET_PROTOCOL  : "ws://",          // Websocket protocol.
     BACKEND_HOST        : "localhost",      // Backend host.
-    BACKEND_PORT        : 80,             // Backend port.
+    BACKEND_PORT        : 8000,             // Backend port.
     BACKEND_PATH        : null,             // Backend path. Fill it with null if you don't use backend path.
 };
 
