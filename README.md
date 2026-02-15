@@ -1,10 +1,12 @@
 # StreamTFHD
 A simple YouTube streaming platform.
 
+StreamTFHD is a simple YouTube streaming platform. It's a web app built in HTML, CSS, JavaScript, Bootstrap in the frontend; and Rust with Actix framework in the backend. 
+
 # Dependencies
-* `build-essential` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
-* `pkg-config` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
-* `libssl-dev` (If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+* `build-essential`
+* `pkg-config`
+* `libssl-dev`
 * `postgresql` (16.11 or higher)
 * `rustc` (1.92.0 or higher)
 * `cargo` (1.92.0 or higher)
@@ -13,13 +15,15 @@ A simple YouTube streaming platform.
 * `nginx` (for reverse proxy in production)
 * `ffmpeg`
 * `certbot` (if you're using SSL/TLS)
-* `python3-certbot-nginx` (if you're using SSL/TLS. If you're using Debian based distribution. If not, you can find the equivalent package for your Linux distribution.)
+* `python3-certbot-nginx` (if you're using SSL/TLS)
+
+*Notes: All of dependenciy packages listed here are Debian based packages. If you're using non Debian based Linux distribution, you can find the equivalent packages for your Linux distribution.*
 
 # Run In Development Environment
 To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
 
 ## Install dependency packages
-To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and in runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
+To build and run this app, we need bunch of dependency packages that this app depend on it. The dependency packages is needed for building the app and for runtime. This app can be built and deployed to any Linux distribution as long as it uses `systemd` as init, but in this `README.md` we will use `Ubuntu 24.04` as an example. If you use another Linux distribution, you can find equvalent packages and command for your Linux distribution.
 
 At first we need to do update, use this command :
 ```bash
@@ -31,12 +35,12 @@ And then install dependency packages (exclude `rustc` and `cargo`) using this co
 sudo apt install build-essential pkg-config libssl-dev postgresql curl nginx ffmpeg certbot python3-certbot-nginx -y
 ```
 
-For `rustc` and `cargo`, we will install the lates version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
+For `rustc` and `cargo`, we will install the latest version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ```
 
-After that, use this command to configures your current bash shell session to use the Rust programming environment :
+After that, use this command to configure your current bash shell session to use the Rust programming environment :
 ```bash
 source "$HOME/.cargo/env"
 ```
@@ -94,7 +98,7 @@ Still inside psql:
 ```sql
 GRANT USAGE, CREATE ON SCHEMA public TO your-user;
 ```
-*Change `your user` with the user that was you create.*
+*Change `your-user` with the user that was you create.*
 
 ### 4. Make your user own the schema
 Sometimes public schema is still owned by postgres, and this causes permission issues.
@@ -117,7 +121,7 @@ cp env.dev .env
 cd ../
 ```
 
-## Configure the tnv file for backend
+## Configure the env file for backend
 ```bash
 cd streamtfhd-backend
 cp env.dev .env
@@ -126,11 +130,11 @@ cp env.dev .env
 Edit the `.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME with the valid value and leave the others with default value.
 
 ## Configure the frontend
-The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT.
+The frontend is HTML, CSS, and JavaScript. In the development environment, change the BACKEND_HOST and BACKEND_PORT in `config.js` file.
 
 Edit `streamtfhd-frontend/src/html/js/config.js` file with your favorite editor.
 
-Fill the BACKEND_HOST object with `localhost`, and fill the BACKEND_PORT object with `8000` value, so it will looks like this:
+Fill the BACKEND_HOST property with `localhost`, and fill the BACKEND_PORT property with `8000` value, so it will looks like this:
 ```javascript
 const base_config = {
     HTTP_PROTOCOL       : "http://",        // HTTP protocol.
@@ -150,7 +154,7 @@ cd streamtfhd-frontend
 cargo run
 ```
 
-To run the backend :
+To run the backend, open another terminal and then run these commands :
 ```bash
 cd streamtfhd-backend
 cargo run
@@ -160,7 +164,7 @@ cargo run
 You can open it from the browser through `http://localhost:8080`
 
 ## The backend logs
-You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs tab, in the web app.
+You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs, in the web app.
 
 # Quick Setup And Installtion
 Comming soon....
@@ -181,12 +185,12 @@ And then install dependency packages (exclude `rustc` and `cargo`) using this co
 sudo apt install build-essential pkg-config libssl-dev postgresql curl nginx ffmpeg certbot python3-certbot-nginx -y
 ```
 
-For `rustc` and `cargo`, we will install the lates version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
+For `rustc` and `cargo`, we will install the latest version using `rustup` instead of from package manager. Use this command to install `rustc` and `cargo` :
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ```
 
-After that, use this command to configures your current bash shell session to use the Rust programming environment :
+After that, use this command to configure your current bash shell session to use the Rust programming environment :
 ```bash
 source "$HOME/.cargo/env"
 ```
@@ -222,7 +226,7 @@ Still inside psql:
 ```sql
 GRANT USAGE, CREATE ON SCHEMA public TO your-user;
 ```
-*Change `your user` with the user that was you create.*
+*Change `your-user` with the user that was you create.*
 
 #### 4. Make your user own the schema
 Sometimes public schema is still owned by postgres, and this causes permission issues.
@@ -272,7 +276,7 @@ sudo ./install.sh
 ```
 
 ### Configure the env file for frontend
-Edit `/etc/streamtfhd/streamtfhd-frontend.env` file with your favorite editor.
+Edit `/etc/streamtfhd/streamtfhd-frontend.env` file with your favorite editor. Make changes according to your setup.
 
 ### Configure the env file for backend
 Edit `/etc/streamtfhd/streamtfhd-backend.env` file with your favourite editor. Change the needed value like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME, JWT_SECRET_KEY, FRONTEND_HOST and FRONTEND_PORT with the valid value and leave the others with default value. As a reminder, JWT_SECRET_KEY is vital. StreamTFHD uses HS256 algorithm for JWT, which means the JWT_SECRET_KEY must be 32 (or more) bytes lenght.
@@ -478,7 +482,6 @@ sudo ln -s /etc/nginx/sites-available/streamtfhd /etc/nginx/sites-enabled/stream
 ```
 
 Remove the default configuration of NGINX web server:
-
 ```bash
 sudo rm /etc/nginx/sites-available/default
 ```
@@ -494,7 +497,7 @@ sudo systemctl restart nginx
 ```
 
 ### Start StreamTFHD service
-To start both StreamTFHD service backend and frontend, you can use `systemctl` command. Make sure `postgresql` service already running, if not, the StreamTFHD service will fail to start.
+To start both StreamTFHD service backend and frontend, you can use `systemctl` command. Make sure `postgresql` service already running, if not, the StreamTFHD backend service will not start.
 
 #### Start StreamTFHD frontend
 
@@ -564,7 +567,7 @@ Copy the `env.file` file to `.env`
 cp env.file .env
 ```
 
-Edit the `.env` file using your favorite editor. Fill all nedded information like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME.
+Edit the `.env` file using your favorite editor. Fill all nedded informations like DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, and DATABASE_NAME.
 
 After that, now you can reset the password by runing it using `cargo`
 ```bash

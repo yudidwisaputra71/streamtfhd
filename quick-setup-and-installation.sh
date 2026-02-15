@@ -35,16 +35,6 @@ function get_server_port() {
     done
 }
 
-function get_database_name() {
-    while true; do
-        read -p "Enter a database name that you want to create for storing the app data : " DATABASE_NAME
-
-        if [ ! -z $DATABASE_NAME ]; then
-            break
-        fi
-    done
-}
-
 function get_database_password {
     while true; do
         read -p "Enter a password for your database : " DATABASE_PASSWORD
@@ -248,12 +238,6 @@ function create_var_www_dir_if_not_exist() {
     if [ ! -d /var/www ]; then
         mkdir -v /var/www;
 
-        if [ $? -gt 0 ]; then
-            echo "Failed to create /var/www directory.";
-
-            exit 432;
-        fi
-
         chown root:root /var/www
     fi
 }
@@ -261,12 +245,6 @@ function create_var_www_dir_if_not_exist() {
 function create_var_www_streamfhd_for_frontend() {
     if [ ! -d /var/www/streamtfhd ]; then
         mkdir -v /var/www/streamtfhd
-
-        if [ $? -gt 0 ]; then
-            echo "Failed to create /var/www/streamtfhd directory.";
-
-            exit 431;
-        fi
 
         chown streamtfhd:streamtfhd /var/www/streamtfhd
     fi
@@ -389,7 +367,6 @@ function create_log_dir() {
 function main() {
     get_server_host
     get_server_port
-    get_database_name
     get_database_password
     
     #if_the_distribution_is_not_in_the_supported_list
