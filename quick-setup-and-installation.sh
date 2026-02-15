@@ -395,7 +395,7 @@ function set_frontend_config_js() {
 
     sed -i "s/BACKEND_HOST        : \"your-backend-host\",/BACKEND_HOST        : \"$HOST\",/" $file
     sed -i "s/BACKEND_PORT        : 80,/BACKEND_PORT        : $PORT,/" $file
-    sed -i "s/BACKEND_PATH        : null,/BACKEND_PATH        : \"/api/v1\",/" $file
+    sed -i "s/BACKEND_PATH        : null,/BACKEND_PATH        : \"\/api\/v1\",/" $file
 }
 
 function set_nginx_config_file() {
