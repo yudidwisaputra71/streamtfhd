@@ -174,7 +174,7 @@ curl -s -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yud
 
 *Notes: The automatic setup and installation script does not support SSL/TLS right now. If you want to use SSL/TLS, use manual setup and installation instead, or setup it manually alongside automatic setup and installation.*
 
-*Notes: If you use automatic setup and installation, the database user and the database is "streamtfhd".*
+*Notes: If you use automatic setup and installation, the database, database user, and password is "streamtfhd".*
 
 # Manual Installation
 This is the step by step of manual configuration and installation.
