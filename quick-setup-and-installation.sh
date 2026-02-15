@@ -92,9 +92,9 @@ function get_not_installed_packages_from_dependencies() {
 }
 
 function install_dependencies_debian() {
-    packages=$(get_not_installed_packages_from_dependencies)
+    packages="$(get_not_installed_packages_from_dependencies)"
 
-    if [ $packages == ""]; then
+    if [ "$packages" == ""]; then
         echo "No need to install Debian dependencies"
     else
         apt update
@@ -103,9 +103,9 @@ function install_dependencies_debian() {
 }
 
 function install_dependencies_ubuntu() {
-    packages=$(get_not_installed_packages_from_dependencies)
+    packages="$(get_not_installed_packages_from_dependencies)"
 
-    if [ $packages == ""]; then
+    if [ "$packages" == ""]; then
         echo "No need to install Ubuntu dependencies"
     else
         apt update
