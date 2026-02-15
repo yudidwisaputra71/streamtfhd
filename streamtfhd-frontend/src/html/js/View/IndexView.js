@@ -846,13 +846,22 @@ export class IndexView {
         modal.hide();
     }
 
+    // here
     deleteStreamModal(id) {
         this.#deleteStreamId = id;
 
         const modalEl = document.getElementById('deleteStreamModal');
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const liveStreamStautus = this.#getLiveStreamStatusById(id);
 
         modal.show();
+
+        if (liveStreamStautus === "scheduled" || liveStreamStautus === "starting" || liveStreamStautus === "live") {
+            const deleteButton = document.getElementById("deleteStreamButton");
+
+            deleteButton.disabled = true;
+            this.alertDanger("Live stream is " + liveStreamStautus + ". Please stop or cancel it before deletion.", "alertContainerDeleteStream");
+        }
     }
 
     async #checkCredentials() {
