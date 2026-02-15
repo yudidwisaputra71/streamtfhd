@@ -208,6 +208,10 @@ EOF
 }
 
 function clone_streamtfhd_repository() {
+    if [ -d ./streamtfhd ]; then
+        rm -Rf ./streamtfhd
+    fi
+    
     git clone https://github.com/yudidwisaputra71/streamtfhd.git
 }
 
