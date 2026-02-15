@@ -11,7 +11,7 @@ HOST=""
 PORT= 
 DATABASE_NAME="streamtfhd"
 DATABASE_USER="streamtfhd"
-DATABASE_PASSWORD=""
+DATABASE_PASSWORD="streamtfhd"
 DEPENDENCIES_UBUNTU=("build-essential" "pkg-config" "libssl-dev" "nginx" "ffmpeg" "certbot" "python3-certbot-nginx" "git" "postgresql" "curl" "sed")
 DEPENDENCIES_DEBIAN=("build-essential" "pkg-config" "libssl-dev" "nginx" "ffmpeg" "certbot" "python3-certbot-nginx" "git" "postgresql" "curl" "sed")
 SUPPORTED_DISTRIBUTIONS=("debian" "ubuntu")
@@ -39,16 +39,6 @@ function get_server_port() {
         read -p "Enter the port that will you use for this app : " PORT
 
         if [ ! -z $PORT ]; then
-            break
-        fi
-    done
-}
-
-function get_database_password {
-    while true; do
-        read -p "Enter a password for your database : " DATABASE_PASSWORD
-
-        if [ ! -z $DATABASE_PASSWORD ]; then
             break
         fi
     done
@@ -521,7 +511,6 @@ function main() {
 
     get_server_host
     get_server_port
-    get_database_password
     
     if_the_distribution_is_not_in_the_supported_list
     install_dependencies
