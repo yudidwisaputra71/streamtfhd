@@ -379,7 +379,7 @@ function set_frontend_env_file() {
 
 function set_backend_env_file() {
     file="/etc/streamtfhd/streamtfhd-backend.env"
-    secret_key="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)"
+    secret_key="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 || true)"
 
     sed -i "s/DATABASE_USER=database-user/DATABASE_USER=$DATABASE_USER/" $file
     sed -i "s/DATABASE_PASSWORD=database-password/DATABASE_PASSWORD=$DATABASE_PASSWORD/" $file
