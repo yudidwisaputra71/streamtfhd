@@ -23,7 +23,7 @@ function if_not_run_by_superuser() {
 
 function get_server_host() {
     while true; do
-        read -p "Enter the host that will you use for this app : " SERVER_HOST
+        read -p "Enter the host that will you use for this app : " HOST
 
         if [ ! -z $HOST ]; then
             break
@@ -33,7 +33,7 @@ function get_server_host() {
 
 function get_server_port() {
     while true; do
-        read -p "Enter the port that will you use for this app : " SERVER_PORT
+        read -p "Enter the port that will you use for this app : " PORT
 
         if [ ! -z $PORT ]; then
             break
