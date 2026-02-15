@@ -734,6 +734,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background-color: var(--surface-primary);
     color: var(--text);
     border-color: var(--border-color);
+    border-radius: var(--border-radius);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
