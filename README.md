@@ -166,7 +166,7 @@ You can open it from the browser through `http://localhost:8080`
 ## 11. The backend logs
 You can read the backend logs through `streamtfhd-backend/app.log` file; or from the settings, logs, in the web app.
 
-# Quick Setup And Installtion
+# Quick Setup And Installation
 To setup and install this app automatically into production server, run this command:
 ```bash
 curl -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yudidwisaputra71/streamtfhd/refs/heads/main/quick-setup-and-installation.sh && chmod +x quick-setup-and-installation.sh && sudo ./quick-setup-and-installation.sh
