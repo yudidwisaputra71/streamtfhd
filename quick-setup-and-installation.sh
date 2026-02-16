@@ -135,7 +135,7 @@ function install_rust_if_not_installed() {
         version=$(rustc --version | awk '{print $2}')
         minimum_version="1.92.0"
 
-        if [ $version == $minimum_version ]; then
+        if [ "$version" == "$minimum_version" ]; then
             return
         fi
 
