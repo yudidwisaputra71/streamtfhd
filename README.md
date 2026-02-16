@@ -172,6 +172,18 @@ To setup and install this app automatically into production server, run this com
 curl -s -o quick-setup-and-installation.sh https://raw.githubusercontent.com/yudidwisaputra71/streamtfhd/refs/heads/main/quick-setup-and-installation.sh && chmod +x quick-setup-and-installation.sh && sudo ./quick-setup-and-installation.sh
 ```
 
+*Notes: It will ask you a password of your account if you run it as user, but not if you run it as superuser.*
+
+When you run that command, the installer will ask you a host for the app. Fill it with your domain (if you're using domain name), or just an ip address of your host or server if you are not using domain. The prompt will looks like this:
+> Enter the host that will you use for this app :
+
+After that, the installer will ask you a port, the port is used to run the app. If you want to use default port of HTTP server, use port `80`, or you can use any other port as long the port is not used by other. The prompt will looks like this:
+> Enter the port that will you use for this app :
+
+After you input the host and port, the installer will configure all needed things and will install the app to the system by itself.
+
+After the configuration and installation finish, you can access the app through `http://your-host` if you use port `80`, or `http://your-host:your-port` if you're using custom port.
+
 *Notes: The automatic setup and installation script does not support SSL/TLS right now. If you want to use SSL/TLS, use manual setup and installation instead, or setup it manually alongside automatic setup and installation.*
 
 *Notes: If you use automatic setup and installation, the database, database user, and password is "streamtfhd".*
