@@ -213,7 +213,7 @@ function change_working_directory_to_streamtfhd() {
 function build_the_frontend() {
     cd streamtfhd-frontend
 
-    cargo build --release --verbose
+    CARGO_INCREMENTAL=0 CARGO_BUILD_JOBS=1 cargo build --release
 
     cd ../
 }
@@ -221,7 +221,7 @@ function build_the_frontend() {
 function build_the_backend() {
     cd streamtfhd-backend
 
-    cargo build --release --verbose
+    CARGO_INCREMENTAL=0 CARGO_BUILD_JOBS=1 cargo build --release --verbose
 
     cd ../
 }
