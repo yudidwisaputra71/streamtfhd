@@ -221,7 +221,7 @@ function build_the_frontend() {
 function build_the_backend() {
     cd streamtfhd-backend
 
-    CARGO_INCREMENTAL=0 CARGO_BUILD_JOBS=1 cargo build --release --verbose
+    CARGO_INCREMENTAL=0 CARGO_BUILD_JOBS=1 cargo build --release
 
     cd ../
 }
