@@ -19,6 +19,14 @@ StreamTFHD is a simple YouTube streaming platform. It's a web app built in HTML,
 
 *Notes: All of dependency packages listed here are Debian based packages. If you're using non Debian based Linux distribution, you can find the equivalent packages for your Linux distribution.*
 
+# Minimum System Requirements
+This is minumum system requirements of this app. This app is built in Rust at the backend, which means very fast at runtime but need little bit more effort to compile/build. The minumum requirements is quite high for bulding or compiling the app, but in the runtime, it only need very low specification.
+
+* 1 Core CPU
+* 1.5 GB of RAM without swap, or 1GB of RAM with 2GB of swap
+
+*Notes: If your memory is 1GB or less and you don't have swap enabled and you really want to build the project with it, you can enable swap to prevent the operating system terminate the compilation/build process because of out of memory, you can go to [Swap](#Swap) section to enable swap and follow step by step instruction there.*
+
 # Run In Development Environment
 To run this project in development environment, at first, you have to build the project. Use `cargo` to build it. This project requires `rustc` v1.92.0 (or higher) and `cargo` v1.92.0 (or higher).
 
@@ -594,3 +602,51 @@ cargo run
 ```
 
 And then follow the instructions.
+
+# Swap
+If your memory is 1GB or less and you don't have swap, you will not able to build the project. streamtfhd-backend project has quite a lot of dependency so it need minimum 1.5GB of memory or 1GB of memory with 2GB of swap to build. Here are step by step how to enable swap in your server and step by step how to disable it when you done build the project.
+
+## Enable swap
+### Create swap file
+Create a swap file using fallocate :
+```bash
+sudo fallocate -l 2G /swapfile
+```
+
+Or, if fallocate fail, you can use `dd` command :
+```bash
+sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 status=progress
+```
+
+### Secure the swap file permissions
+```bash
+sudo chmod 600 /swapfile
+```
+
+### Format it as swap
+```bash
+sudo mkswap /swapfile
+```
+
+### Enable it immediately
+```bash
+sudo swapon /swapfile
+```
+
+Verify:
+```bash
+swapon --show
+free -h
+```
+
+## Disable swap
+```bash
+sudo swapoff /swapfile
+```
+
+Remove swap file :
+```bash
+sudo rm /swapfile
+```
+
+
